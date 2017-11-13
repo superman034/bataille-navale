@@ -22,4 +22,5 @@ clean:
 	rm -rf *.o
 
 mrproper: clean
-	rm -rf Bibou
+	rm -rf Programme
+
