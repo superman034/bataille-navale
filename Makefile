@@ -5,9 +5,9 @@
 .SUFFIXES:
 
 
-# Définition des variables
+# Définition des variables (-lncurse est ecrit sur le sujet)
 CC= g++
-FLAGS= -Wall
+FLAGS= -Wall -lncurse
 
 
 
