@@ -24,8 +24,10 @@ void Case::setOccupee(bool B) { occupee = B; }
 void Case::setTouchee(bool B) { touchee = B; }
 
 void Case::afficher_case(Window& W, Color col) {
-  if (getTouchee() == true)
+  if (touchee == true)
     W.print(X, Y, "X", col);
+  else if (libre == true)
+    W.print(X, Y, "O", col);
   else
-    W.print(X, Y, " ", col);
+    W.print(X, Y, "_", col);
 }

@@ -1,43 +1,29 @@
 #ifndef GRILLE_H
 #define GRILLE_H
 
-#include "case.h"
 #include "tableau-case.h"
 #include "navire.h"
+#include "window.h"
 
 class Grille{
 
 
 private:
 
-  // On opte pour créer des grilles dynamiques pour en créer de différentes tailles
-  // Par ex: Les deux grilles de jeu et la grille de la flotte en début de partie
-  // Une grille est constituée d'un tableau dynamique de navires et d'un autre tableau dynamique de cases correspondant aux tirs qui n'ont pas atteint un navire
+  // Une grille est constituée d'un tableau statique de 5 navires  et d'un autre tableau dynamique de cases correspondant aux tirs qui n'ont pas atteint un navire
   
-  int nbCases; // Le nombre de cases dans la grille au total, en comptant les cases des navires et les missiles
-  Navire *tabNavires; 
+  Navire tabNavires[5];
   TableauCase tabCases;
-
 
 public:
 
-    Grille(int lignes, int colonnes); // constructeur
-    ~Grille();  // destructeur
-    
-    const Case* at(int, int) const;
-    Case* at(int, int);
+  Grille(const Navire&, const Navire&, const Navire&, const Navire&, const Navire&); // constructeur
 
-    bool tireSurCase(int x, int y);  //tire sur la case
+  bool tireSurCase(int x, int y);
+  bool caseValide(int x, int y);
+  void ajouterCase(const Case&);
+  void afficher_grille(Window&);
     
-    // accesseurs en lecture
-    
-    const int getNbColonnes()const;  //retourne le nombre de colonnes de la grille
-
-    const int getNbLignes()const;  //retourne le nombre de lignes de la grille
-	
-    bool caseValide(int x, int y);
-    
-
 };
 
 #endif

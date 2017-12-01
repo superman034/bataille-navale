@@ -1,5 +1,7 @@
 #include "navire.h"
 
+Navire::Navire() : nbCases(0), tabCases(new Case[0]) {}
+
 // où x et y sont les pos de la première case du navire
 Navire::Navire(int n, int x, int y, Color c) : nbCases(n), tabCases(new Case[n]), couleurNavire(c) {
   // On attribue des valeurs à chaque case du navire, car il a été construit avec le constructeur par défaut de la classe Case :

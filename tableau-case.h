@@ -4,7 +4,7 @@
 #include "case.h"
 #include <iostream>
 
-class TableauCase{ // Classe largement inspirée de la classe TableauInt des TD de l'UE et re-adaptée pour le projet
+class TableauCase{ // Classe largement inspirée de la classe TableauCellule des TD de l'UE et re-adaptée pour le projet
  private:
   Case *_data;
   size_t   _n;
