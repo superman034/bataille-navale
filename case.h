@@ -5,36 +5,38 @@
 
 class Case{
 
-private:
-        bool libre;
-        bool touchee;
-        bool occupee;
+ private:
+  bool libre;
+  bool touchee;
+  bool occupee;
 
-	int X,Y;
+  int X,Y;
 
-public:
+ public:
 
-	Case();     //Constructeur
+  Case();     //Constructeur
+  Case(int, int);
+  bool operator==(const Case&);
+  bool operator!=(const Case&);
+
+  // Accesseurs en lecture
+
+  int getX() const;
+  int getY() const;
+  bool getLibre() const;
+  bool getOccupee() const;
+  bool getTouchee() const;
+
+  // Accesseurs en écriture
+
+  void setY(int);
+  void setX(int);
+  void setLibre(bool B);
+  void setOccupee(bool B);
+  void setTouchee(bool B);
     
-	Case(int X, int Y);
-
-	// Accesseurs en lecture
-
-        int getX() const;
-        int getY() const;
-	bool getLibre() const;
-	bool getOccupee() const;
-	bool getTouchee() const;
-
-	// Accesseurs en écriture
-
-	void setY(int);
-	void setX(int);
-	void setLibre(bool B);
-	void setOccupee(bool B);
-	void setTouchee(bool B);
-    
-	void afficher_case(Window&, Color);
+  void afficher_case(Window&, Color, char);
+  void supprimer_case(Window& W);
 };
 
 #endif
