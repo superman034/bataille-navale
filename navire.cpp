@@ -36,6 +36,21 @@ Navire& Navire::operator=(const Navire& N) {
   return *this;
 }
 
+Navire& Navire::operator=(const Navire* N) {
+  if (this!=N){
+    delete[] tabCases;
+    tabCases=new Case[N->nbCases];
+    couleurNavire=N->couleurNavire;
+    etat=N->etat;
+    nbCases=N->nbCases;
+    
+    for(int i=0;i<nbCases;i++){
+      tabCases[i]=N->tabCases[i];
+    }    
+  }
+  return *this;
+}
+
 bool Navire::operator==(const Navire& N) {
   if(this!=&N){
     if(couleurNavire == N.couleurNavire && etat == N.etat && nbCases == N.nbCases){
@@ -57,6 +72,7 @@ bool Navire::operator==(const Navire& N) {
 bool Navire::operator!=(const Navire& N1){
   return !(*this == N1);
 }
+
 
 Navire::~Navire() { if(tabCases != NULL) delete[] tabCases; }
 

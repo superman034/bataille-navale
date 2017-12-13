@@ -19,11 +19,11 @@ public:
   Grille();
   Grille(const Navire&, const Navire&, const Navire&, const Navire&, const Navire&); // constructeur
 
-  void ajouterNavire(const Navire&, Color);
+  void ajouterNavire(const Navire*, Window&);
   void enleverNavire(int, Window&);
-  int findNavire(const Navire&);
+  int findNavire(const Navire*);
   void ajouterCase(const Case&);
-  Navire& aQuelNavireAppartientCase(int, int);
+  Navire* aQuelNavireAppartientCase(int, int);
   
   bool appartientAGrille(int, int); // Permet de vérifier à partir de coordonnées x et y si la case est dans la grille ou non
   void afficher_grille(Window&);

@@ -15,7 +15,7 @@ sinon il perd
   return;
 }
 
-void placerNavire(Window& joueur, Grille& Joueur, Navire &aDeplacer){
+void placerNavire(Window& joueur, Grille& Joueur, Navire* aDeplacer){
 
   int ch;
 
@@ -30,23 +30,25 @@ void placerNavire(Window& joueur, Grille& Joueur, Navire &aDeplacer){
 	break;
 
       case KEY_UP:
-	if(aDeplacer.Y_min_case_navire() > 0)
-	  aDeplacer.deplacerNavireHaut(joueur);
+	if(aDeplacer->Y_min_case_navire() > 0){
+	  aDeplacer->deplacerNavireHaut(joueur);
+	  // Joueur.afficher_grille(joueur);
+	}
 	break;
 	  
       case KEY_DOWN:
-	if(((joueur.getHauteur()-1) - aDeplacer.Y_max_case_navire()) != 0)
-	  aDeplacer.deplacerNavireBas(joueur);
+	if(((joueur.getHauteur()-1) - aDeplacer->Y_max_case_navire()) != 0)
+	  aDeplacer->deplacerNavireBas(joueur);
 	break;
 	  
       case KEY_LEFT:
-	if(aDeplacer.X_min_case_navire() > 0)
-	  aDeplacer.deplacerNavireGauche(joueur);
+	if(aDeplacer->X_min_case_navire() > 0)
+	  aDeplacer->deplacerNavireGauche(joueur);
 	break;
 	  
       case KEY_RIGHT:
-	if((joueur.getHauteur() - aDeplacer.X_max_case_navire()) -1 != 0)
-	  aDeplacer.deplacerNavireDroite(joueur);
+	if((joueur.getHauteur() - aDeplacer->X_max_case_navire()) -1 != 0)
+	  aDeplacer->deplacerNavireDroite(joueur);
       }
     }
 }
@@ -67,18 +69,18 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case KEY_UP:	  
 	if (y-1 < 0 == false){
 	  if(Flotte.appartientAGrille(x, y-1) == true && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
-	    flotte.print(x,--y,p, Flotte.aQuelNavireAppartientCase(x, y-1).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
+	    flotte.print(x,--y,p, Flotte.aQuelNavireAppartientCase(x, y-1)->getCouleur());
 	  }
 
 	  else if(Flotte.appartientAGrille(x,y-1) == false && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(x,--y,p,col);
 	  }
 
 	  else if(Flotte.appartientAGrille(x,y-1) == true && Flotte.appartientAGrille(x,y) == false){
 	    flotte.print(x,y,' ', col);
-	    flotte.print(x,--y,p,Flotte.aQuelNavireAppartientCase(x,y-1).getCouleur());
+	    flotte.print(x,--y,p,Flotte.aQuelNavireAppartientCase(x,y-1)->getCouleur());
 	  }
 	  
 	  else{
@@ -90,18 +92,18 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case KEY_DOWN:
 	if (y+2 > flotte.getHauteur() == false){
 	  if(Flotte.appartientAGrille(x, y+1) == true && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
-	    flotte.print(x,++y,p, Flotte.aQuelNavireAppartientCase(x, y+1).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
+	    flotte.print(x,++y,p, Flotte.aQuelNavireAppartientCase(x, y+1)->getCouleur());
 	  }
 
 	  else if(Flotte.appartientAGrille(x,y+1) == false && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(x,++y,p,col);
 	  }
 
 	  else if(Flotte.appartientAGrille(x,y+1) == true && Flotte.appartientAGrille(x,y) == false){
 	    flotte.print(x,y,' ', col);
-	    flotte.print(x,++y,p,Flotte.aQuelNavireAppartientCase(x,y+1).getCouleur());
+	    flotte.print(x,++y,p,Flotte.aQuelNavireAppartientCase(x,y+1)->getCouleur());
 	  }
 	  
 	  else{
@@ -113,18 +115,18 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case KEY_LEFT:
 	if (x-1 < 0 == false){
 	  if(Flotte.appartientAGrille(x-1, y) == true && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
-	    flotte.print(--x,y,p, Flotte.aQuelNavireAppartientCase(x-1, y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
+	    flotte.print(--x,y,p, Flotte.aQuelNavireAppartientCase(x-1, y)->getCouleur());
 	  }
 
 	  else if(Flotte.appartientAGrille(x-1,y) == false && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(--x,y,p,col);
 	  }
 
 	  else if(Flotte.appartientAGrille(x-1,y) == true && Flotte.appartientAGrille(x,y) == false){
 	    flotte.print(x,y,' ', col);
-	    flotte.print(--x,y,p,Flotte.aQuelNavireAppartientCase(x-1,y).getCouleur());
+	    flotte.print(--x,y,p,Flotte.aQuelNavireAppartientCase(x-1,y)->getCouleur());
 	  }
 	  
 	  else{
@@ -136,18 +138,18 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case KEY_RIGHT:
 	if (x+2 > flotte.getLargeur() == false){
 	  if(Flotte.appartientAGrille(x+1, y) == true && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
-	    flotte.print(++x,y,p,Flotte.aQuelNavireAppartientCase(x+1, y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
+	    flotte.print(++x,y,p,Flotte.aQuelNavireAppartientCase(x+1, y)->getCouleur());
 	  }
 
 	  else if(Flotte.appartientAGrille(x+1,y) == false && Flotte.appartientAGrille(x,y) == true){
-	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y).getCouleur());
+	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(++x,y,p,col);
 	  }
 
 	  else if(Flotte.appartientAGrille(x+1,y) == true && Flotte.appartientAGrille(x,y) == false){
 	    flotte.print(x,y,' ', col);
-	    flotte.print(++x,y,p,Flotte.aQuelNavireAppartientCase(x+1,y).getCouleur());
+	    flotte.print(++x,y,p,Flotte.aQuelNavireAppartientCase(x+1,y)->getCouleur());
 	  }
 	  
 	  else{
@@ -159,13 +161,14 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case 10: // Valeur ASCII pour désigner la touche entrée
 	if (Flotte.appartientAGrille(x, y) == true){
 	  
-	  Navire aDeplacer = Flotte.aQuelNavireAppartientCase(x, y);	  
+	  // Navire* aDeplacer = NULL;
+	  Navire* aDeplacer = Flotte.aQuelNavireAppartientCase(x, y);	  
 	  // On enlève le navire séléctionné de la grille Flotte pour l'ajouter à la grille Joueur :
 	  
 	  Flotte.enleverNavire(Flotte.findNavire(aDeplacer), flotte); // Suppression de la donnée du navire dans la grille Flotte
-	  Joueur.ajouterNavire(aDeplacer, aDeplacer.getCouleur());
+	  Joueur.ajouterNavire(aDeplacer, joueur);
 	  
-	  Joueur.afficher_grille(joueur);
+	  //Joueur.afficher_grille(joueur);
 	  
 	  placerNavire(joueur, Joueur, aDeplacer);
 	  nbNaviresPlaces++;
@@ -175,7 +178,7 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 	break;
       }
 
-      // Fonctionne quand on sort du while, donc quand tous les navires sont placés et donc on lance la partie :
+      // Fonctionne quand on sort du while, donc quand tous les navires sont placés on lance la partie :
       lancerPartie();
 
     }

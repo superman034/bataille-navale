@@ -17,13 +17,14 @@ void Grille::ajouterCase(const Case& c) {
   tabCases.push_back(c);
 }
 
-void Grille::ajouterNavire(const Navire& N, Color col) {
+void Grille::ajouterNavire(const Navire* N, Window& W) {
   int i = 0;
   bool trouveNavireVide = false;
   while(trouveNavireVide == false && i<5){
     if (tabNavires[i].getNbCases() == 0){ // On cherche le premier navire vide dans la grille donc le premier qui a un nb de cases égal à 0
-      tabNavires[i] = N;
-      tabNavires[i].setCouleur(col);
+      tabNavires[i] = *N;
+      tabNavires[i].setCouleur(N->getCouleur());
+      tabNavires[i].afficher_navire(W, tabNavires[i].getCouleur(), '_');
       trouveNavireVide = true;
     }
     i++;
@@ -37,16 +38,16 @@ void Grille::enleverNavire(int i, Window& W) {
   }
 }
 
-Navire& Grille::aQuelNavireAppartientCase(int x, int y){
+Navire* Grille::aQuelNavireAppartientCase(int x, int y){
   for(int i=0; i<5;i++){
     if (tabNavires[i].estDansNavire(x, y) == true)
-      return tabNavires[i];
+      return &tabNavires[i];
   }
 }
 
-int Grille::findNavire(const Navire& N){
+int Grille::findNavire(const Navire* N){
   for(int i=0;i<5;i++){
-    if (tabNavires[i] == N) // On utilise la surcharge d'opérateur == de la classe Navire
+    if (tabNavires[i] == *N) // On utilise la surcharge d'opérateur == de la classe Navire
       return i;
   }
   return -1;

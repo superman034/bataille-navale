@@ -16,6 +16,7 @@ class Navire{
   Navire(int, int, int, Color); // Par défaut, un navire est initialisé par un tableau dynamique de n cases occupées et non touchées.
   Navire(const Navire&); // Constructeur par copie
   Navire& operator=(const Navire&); // Par affectation
+  Navire& operator=(const Navire*);
   bool operator==(const Navire&);
   bool operator!=(const Navire&);
   ~Navire(); // Le destructeur désalloue le tableau dynamique des cases du navire.
