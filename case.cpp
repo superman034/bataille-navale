@@ -5,7 +5,7 @@
 
 Case::Case() :  X(0), Y(0), libre(true), occupee(false), touchee(false) { }
 
-Case::Case(int x, int y) :  X(x), Y(y), libre(true), occupee(false), touchee(false) { }
+Case::Case(size_t x, size_t y) :  X(x), Y(y), libre(true), occupee(false), touchee(false) { }
 // Libre true, occupee false pour les cases en dehors des navires
 // Libre false, occupee true pour les cases de navire
 // On initialise toujours touchee à false
@@ -20,16 +20,16 @@ bool Case::operator!=(const Case& C) {
 
 // Accesseurs en lecture
 
-int Case::getX() const { return X; }
-int Case::getY() const { return Y; }
+size_t Case::getX() const { return X; }
+size_t Case::getY() const { return Y; }
 bool Case::getLibre() const { return libre; }
 bool Case::getOccupee() const { return occupee; }
 bool Case::getTouchee() const { return touchee; }
 
 // Acesseurs en écriture
  
-void Case::setY(int y) { Y = y; }
-void Case::setX(int x) { X = x; }
+void Case::setY(size_t y) { Y = y; }
+void Case::setX(size_t x) { X = x; }
 void Case::setLibre(bool B) { libre = B; }
 void Case::setOccupee(bool B) { occupee = B; }
 void Case::setTouchee(bool B) { touchee = B; }

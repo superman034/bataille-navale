@@ -3,17 +3,18 @@
 
 #include "case.h"
 #include "window.h"
+#include <iostream>
 
 class Navire{  
  private:
-  Color couleurNavire;
-  int nbCases;
-  bool etat; // true = navire coulé, false si non
+  size_t nbCases;
   Case *tabCases; // Un navire est un tableau de cases
+  Color couleurNavire;
+  bool etat; // true = navire coulé, false si non
   
  public:
   Navire();
-  Navire(int, int, int, Color); // Par défaut, un navire est initialisé par un tableau dynamique de n cases occupées et non touchées.
+  Navire(size_t, size_t, size_t, Color); // Par défaut, un navire est initialisé par un tableau dynamique de n cases occupées et non touchées.
   Navire(const Navire&); // Constructeur par copie
   Navire& operator=(const Navire&); // Par affectation
   Navire& operator=(const Navire*);
@@ -22,31 +23,31 @@ class Navire{
   ~Navire(); // Le destructeur désalloue le tableau dynamique des cases du navire.
 
   bool getEtat() const; // Si toutes les cases du navire sont touchées, alors le navire coule. Renvoie true si il est coulé.
-  int getNbCases() const;
+  size_t getNbCases() const;
   Color getCouleur() const;
   
   void setEtat(bool); // Permet d'affecter une valeur à l'attribut "estCoule". True = Coulé, False = Pas encore coulé
   void setCouleur(Color);
 
   // Methodes pour gérer le déplacement et la rotation des navires
-  void deplacerNavireHaut(Window&);
-  void deplacerNavireBas(Window&);
-  void deplacerNavireDroite(Window&);
-  void deplacerNavireGauche(Window&);
+  void deplacerNavireHaut();
+  void deplacerNavireBas();
+  void deplacerNavireDroite();
+  void deplacerNavireGauche();
 
-  void PivoterNavireGauche(Window&);
-  void PivoterNavireDroite(Window&);
+  void PivoterNavireGauche();
+  void PivoterNavireDroite();
 
-  int Y_min_case_navire(); // on recupére l'ordonnée de la first case
-  int Y_max_case_navire();
-  int X_min_case_navire();
-  int X_max_case_navire();
+  size_t Y_min_case_navire(); // on recupére l'ordonnée de la first case
+  size_t Y_max_case_navire();
+  size_t X_min_case_navire();
+  size_t X_max_case_navire();
 
-  Case& at(int i);
-  const Case& at(int i) const;
+  Case& at(size_t i);
+  const Case& at(size_t i) const;
  
-  int nb_cases_touchees()    const;
-  bool estDansNavire(int, int) const; // Vérifie si une case donnée est dans un navire
+  size_t nb_cases_touchees()    const;
+  bool estDansNavire(size_t, size_t) const; // Vérifie si une case donnée est dans un navire
   
   void verifCoule();
 

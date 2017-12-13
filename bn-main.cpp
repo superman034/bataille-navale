@@ -2,6 +2,7 @@
 #include "navire.h"
 #include "case.h"
 #include "grille.h"
+#include <iostream>
 
 void lancerPartie(){
   /*
@@ -17,11 +18,11 @@ sinon il perd
 
 void placerNavire(Window& joueur, Grille& Joueur, Navire* aDeplacer){
 
-  int ch;
+  size_t ch;
 
-  int x=0, y=0;
+  /*size_t x=0, y=0;
   char p='X';
-  Color col=WBLACK;
+  Color col=WBLACK;*/
   
   while((ch = getch()) != 10) // Touche pour confirmer l'emplacement du navire, là c'est entrée
     {     
@@ -31,34 +32,42 @@ void placerNavire(Window& joueur, Grille& Joueur, Navire* aDeplacer){
 
       case KEY_UP:
 	if(aDeplacer->Y_min_case_navire() > 0){
-	  aDeplacer->deplacerNavireHaut(joueur);
+	  aDeplacer->supprimer_navire(joueur); // Suppresion graphique
+	  aDeplacer->deplacerNavireHaut();
 	  // Joueur.afficher_grille(joueur);
+	  aDeplacer->afficher_navire(joueur, aDeplacer->getCouleur(), '_'); // Affichage graphique de la nouvelle position
 	}
 	break;
 	  
       case KEY_DOWN:
 	if(((joueur.getHauteur()-1) - aDeplacer->Y_max_case_navire()) != 0)
-	  aDeplacer->deplacerNavireBas(joueur);
+	  aDeplacer->supprimer_navire(joueur); // Suppresion graphique
+	  aDeplacer->deplacerNavireBas();
+	  aDeplacer->afficher_navire(joueur, aDeplacer->getCouleur(), '_'); // Affichage graphique de la nouvelle position
 	break;
 	  
       case KEY_LEFT:
 	if(aDeplacer->X_min_case_navire() > 0)
-	  aDeplacer->deplacerNavireGauche(joueur);
+	  aDeplacer->supprimer_navire(joueur); // Suppresion graphique
+	  aDeplacer->deplacerNavireGauche();
+	  aDeplacer->afficher_navire(joueur, aDeplacer->getCouleur(), '_'); // Affichage graphique de la nouvelle position
 	break;
 	  
       case KEY_RIGHT:
 	if((joueur.getHauteur() - aDeplacer->X_max_case_navire()) -1 != 0)
-	  aDeplacer->deplacerNavireDroite(joueur);
+	  aDeplacer->supprimer_navire(joueur); // Suppresion graphique
+	  aDeplacer->deplacerNavireDroite();
+	  aDeplacer->afficher_navire(joueur, aDeplacer->getCouleur(), '_'); // Affichage graphique de la nouvelle position
       }
     }
 }
 
 void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& Joueur){
 
-  int ch;
+  size_t ch;
 
-  int x=0, y=0;
-  int nbNaviresPlaces = 0;
+  size_t x=0, y=0;
+  size_t nbNaviresPlaces = 0;
   char p='X';
   Color col=WBLACK;
   flotte.print(x,y,p,col);
@@ -67,7 +76,7 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
     {     
       switch (ch) {
       case KEY_UP:	  
-	if (y-1 < 0 == false){
+	if ((y-1 < 0) == false){
 	  if(Flotte.appartientAGrille(x, y-1) == true && Flotte.appartientAGrille(x,y) == true){
 	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(x,--y,p, Flotte.aQuelNavireAppartientCase(x, y-1)->getCouleur());
@@ -90,7 +99,7 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 	}
 	break;
       case KEY_DOWN:
-	if (y+2 > flotte.getHauteur() == false){
+	if ((y+2 > flotte.getHauteur()) == false){
 	  if(Flotte.appartientAGrille(x, y+1) == true && Flotte.appartientAGrille(x,y) == true){
 	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(x,++y,p, Flotte.aQuelNavireAppartientCase(x, y+1)->getCouleur());
@@ -113,7 +122,7 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 	}
 	break;
       case KEY_LEFT:
-	if (x-1 < 0 == false){
+	if ((x-1 < 0) == false){
 	  if(Flotte.appartientAGrille(x-1, y) == true && Flotte.appartientAGrille(x,y) == true){
 	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(--x,y,p, Flotte.aQuelNavireAppartientCase(x-1, y)->getCouleur());
@@ -136,7 +145,7 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 	}
 	break;
       case KEY_RIGHT:
-	if (x+2 > flotte.getLargeur() == false){
+	if ((x+2 > flotte.getLargeur()) == false){
 	  if(Flotte.appartientAGrille(x+1, y) == true && Flotte.appartientAGrille(x,y) == true){
 	    flotte.print(x,y,'_',Flotte.aQuelNavireAppartientCase(x,y)->getCouleur());
 	    flotte.print(++x,y,p,Flotte.aQuelNavireAppartientCase(x+1, y)->getCouleur());
@@ -162,15 +171,18 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 	if (Flotte.appartientAGrille(x, y) == true){
 	  
 	  // Navire* aDeplacer = NULL;
-	  Navire* aDeplacer = Flotte.aQuelNavireAppartientCase(x, y);	  
+	  Navire* ptr = Flotte.aQuelNavireAppartientCase(x, y);
+	  Navire aDeplacer = *ptr;
 	  // On enlève le navire séléctionné de la grille Flotte pour l'ajouter à la grille Joueur :
 	  
-	  Flotte.enleverNavire(Flotte.findNavire(aDeplacer), flotte); // Suppression de la donnée du navire dans la grille Flotte
 	  Joueur.ajouterNavire(aDeplacer, joueur);
+	  Flotte.enleverNavire(Flotte.findNavire(ptr), flotte); // Suppression de la donnée du navire dans la grille Flotte
+
+	  Navire* ptr2 = Joueur.aQuelNavireAppartientCase(x, y);
 	  
 	  //Joueur.afficher_grille(joueur);
 	  
-	  placerNavire(joueur, Joueur, aDeplacer);
+	  placerNavire(joueur, Joueur, ptr2);
 	  nbNaviresPlaces++;
 	  
 	  flotte.print(x,y,p,col);
