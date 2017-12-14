@@ -166,6 +166,14 @@ size_t Navire::nb_cases_touchees() const {size_t k = 0; for(size_t i = 0; i < nb
 Case& Navire::at(size_t i)      {return tabCases[i];}
 const Case& Navire::at(size_t i) const  {return tabCases[i];}
 
+Case* Navire::findCase(size_t X, size_t Y) {
+  for(int i=0; i<nbCases;i++){
+    if (tabCases[i].getX() == X && tabCases[i].getY() == Y)
+      return &tabCases[i];
+  }
+  return NULL;
+}
+
 bool Navire::estDansNavire(size_t x, size_t y) const {
   for(size_t i=0;i<nbCases;i++){
     if (tabCases[i].getX() == x && tabCases[i].getY() == y)
@@ -174,12 +182,16 @@ bool Navire::estDansNavire(size_t x, size_t y) const {
   return false;
 }
 
-void Navire::verifCoule() { if (nb_cases_touchees() == nbCases) setEtat(true); }
+bool Navire::verifCoule() { if (nb_cases_touchees() == nbCases) {setEtat(true); return true; } else return false; }
 
 // permet d'afficher toutes les cases du navire suivant leur position dans la grille.
 void Navire::afficher_navire(Window& W, Color col, char p) {
-  for(size_t i=0;i<nbCases;i++)
-    tabCases[i].afficher_case(W, col, p);
+  for(size_t i=0;i<nbCases;i++){
+    if (tabCases[i].getTouchee() == true)
+      tabCases[i].afficher_case(W, col, 'X');
+    else
+      tabCases[i].afficher_case(W, col, p);
+  }
 }
 
 // Méthode pour supprimer graphiquement un navire de la fenêtre

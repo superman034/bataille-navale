@@ -15,6 +15,7 @@ private:
   
   Navire tabNavires[5];
   TableauCase tabCases;
+  size_t nbNaviresCoules;
 
 public:
   Grille();
@@ -26,8 +27,15 @@ public:
   void ajouterCase(const Case&);
   Navire* aQuelNavireAppartientCase(size_t, size_t);
   
+  void tirCase(Window& W);
+  // Permet de tirer au hasard sur une case de la grille
+  
   bool appartientAGrille(size_t, size_t); // Permet de vérifier à partir de coordonnées x et y si la case est dans la grille ou non
+  bool appartientATabCases(size_t, size_t);
   void afficher_grille(Window&);
+
+  size_t getNbNaviresCoules();
+  void calculNbNaviresCoules();
     
 };
 

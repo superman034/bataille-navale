@@ -49,7 +49,8 @@ class Navire{
   size_t nb_cases_touchees()    const;
   bool estDansNavire(size_t, size_t) const; // Vérifie si une case donnée est dans un navire
   
-  void verifCoule();
+  bool verifCoule();
+  Case* findCase(size_t, size_t);
 
   // permet d'afficher toutes les cases du navire suivant leur position dans la grille.
   void afficher_navire(Window&, Color, char);
