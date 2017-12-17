@@ -1,42 +1,46 @@
 #include "joueur.h"
 
-Joueur::Joueur(char *nom, int identifiant){
+Joueur::Joueur(std::string nom, size_t identifiant,bool ia){
     this->bateauxCoules=0;
     this->score=0;
     this->identifiant=identifiant;
-    for (int i=0;i<32;i++){
-        this->nom[i]=nom[i];
-    }
+    this->nom=nom;
+    this->ia=ia;
 }
 
+Joueur::Joueur(){
+    this->bateauxCoules=0;
+    this->score=0;
+    this->identifiant=-1;
+    this->nom="";
+    this->ia=false;
+
+}
 
 Joueur::~Joueur(){
-    for (int i=0;i<32;i++){
-        delete this->nom[i];
-    }
-    delete[] nom;
+
 }
 
-char* Joueur::getNom()const{
-    return this->nom;
+std::string Joueur::getNom()const{
+    return nom;
 }
 
-int Joueur::getScore()const{
+size_t Joueur::getScore()const{
     return this->score;
 }
 
-int Joueur::getCoules()const{
+size_t Joueur::getCoules()const{
     return this->bateauxCoules;
 }
 
-int Joueur::getId()const{
+size_t Joueur::getId()const{
     return this->identifiant;
 }
 
-void Joueur::setNom(char* nouvNom){
-    for (int i=0;i<32;i++){
-        this->nom[i]=nouvNom[i];
-    }
+bool Joueur::getIA()const{return this->ia;}
+
+void Joueur::setNom(std::string nouvNom){
+   this->nom=nouvNom;
 }
 
 void Joueur::setCoules0(){
@@ -47,13 +51,25 @@ void Joueur::addCoules(){
     this->bateauxCoules++;
 }
 
-void JoueursetScore(int score){
+void Joueur::addScore(){
     this->score++;
 }
 
 void Joueur::setScore0(){
     this->score=0;
 }
+
+void Joueur::setIA(){
+ia=true;}
+
+void Joueur::setId(size_t id){
+this->identifiant=id;
+}
+
+//void Joueur::setGrille(Grille grille){}
+
+//Grille Joueur::getGrille(){
+//return grille;}
 
 
 

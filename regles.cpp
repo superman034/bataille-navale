@@ -1,16 +1,32 @@
 #include "regles.h"
+#define HAUT_LARG_GRILLE_MIN 10
 
 
-Regles::Regles(int largGrille, int hautGrille, int totalBateaux, int nombreJoueurs){
+Regles::Regles(int largGrille, int hautGrille){
     this->largGrille=largGrille;
     this->hautGrille=hautGrille;
-    this->nombreJoueurs=nombreJoueurs;
-    this->totalBateaux=totalBateaux;
+    
+}
+Regles::Regles(){
+    this->largGrille=0;
+    this->hautGrille=0;
+
+}//initialise à 0
+
+
+
+int Regles::getLarg(){return largGrille;}
+int Regles::getHaut(){return hautGrille;}
+
+    
+void Regles::setRegles(int largGrille, int hautGrille){
+    this->largGrille=largGrille;
+    this->hautGrille=hautGrille;
 }
 
-
-int Regles::get_nbr_bat_par_joueurs(){
-    return (totalBateaux/2);
+bool Regles::testerRegles(){
+    if(largGrille>HAUT_LARG_GRILLE_MIN &&
+    hautGrille>HAUT_LARG_GRILLE_MIN)
+    return true;
+    return false;
 }
-
-

@@ -4,19 +4,22 @@
 class Regles{
 private:
     int largGrille,
-        hautGrille,
-        totalBateaux,// doit etre pair, un joueur aura totalBateaux/2 bateaux
-        nombreJoueurs//= à 1 ou 2
-        ;
+        hautGrille;
     
     
 public:
     // constructeur / destructeurs
-    Regles(int largGrille, int hautGrille, int totalBateaux, int nombreJoueurs);
+    Regles(int largGrille, int hautGrille);
+    Regles();
   
     
-
-    int get_nbr_bat_par_joueurs(); //totalBateaux/2
+    int getLarg();
+    int getHaut();
+    
+    
+    void setRegles(int largGrille, int hautGrille);//changer les regles
+    
+	bool testerRegles();
     
 };
 
