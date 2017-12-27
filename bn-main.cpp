@@ -2,8 +2,11 @@
 #include "navire.h"
 #include "case.h"
 #include "grille.h"
+#include "chargerNavirePerso.h"
 #include <stdlib.h> // Pour la fonction rand()
 #include <iostream>
+
+using namespace std;
 
 #define SN '-'
 // SN = Le symbole affiché à chaque case d'un navire
@@ -374,13 +377,12 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
     }
 }
 
-
 void init(){
-  int h=12,w=12;
+  int h=20,w=20;
   Window menu(3,30,1,0);
   Window joueur(h,w,2,6);
   Window ia(h,w,29,6);
-  Window flotte(8,13,5,25);
+  Window flotte(8,20,6,32);
   
   menu.setCouleurBordure(BRED);
   joueur.setCouleurBordure(BBLUE);
@@ -394,13 +396,21 @@ void init(){
   Navire contreTorpilleur(3, 6, 2, BYELLOW);
   Navire sousMarin(3, 8, 2, BMAGENTA);
   Navire torpilleur(2, 10, 2, BRED);
-  porteAvions.setEtat(true);
-  croiseur.setEtat(true);
-  contreTorpilleur.setEtat(true);
-  sousMarin.setEtat(true);
-  torpilleur.setEtat(true);
+
+  // Suivant le mode, si l'utilisateur a choisi les modes personnalisé ou non on appelle la fonction suivante :
   
-  Grille Flotte(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
+  Navire* tabPerso;
+  tabPerso = chargerNavirePerso();
+
+  tabPerso[0].deplacerNavire(2, 2);
+  tabPerso[1].deplacerNavire(6, 1);
+  tabPerso[2].deplacerNavire(10, 1);
+  tabPerso[3].deplacerNavire(12, 1);
+  tabPerso[4].deplacerNavire(17, 1);
+  
+  //Grille Flotte(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
+
+  Grille Flotte(tabPerso[0], tabPerso[1], tabPerso[2], tabPerso[3], tabPerso[4]);
   Grille Joueur;
   /* Grille IA;
   initGrille(IA); // Place des navires automatiquement
