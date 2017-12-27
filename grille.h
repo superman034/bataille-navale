@@ -4,6 +4,7 @@
 #include "tableau-case.h"
 #include "navire.h"
 #include "window.h"
+#include <string.h>
 #include <iostream>
 
 class Grille{
@@ -30,8 +31,14 @@ public:
   void tirCase(Window& W);
   // Permet de tirer au hasard sur une case de la grille
   
-  bool appartientAGrille(size_t, size_t); // Permet de vérifier à partir de coordonnées x et y si la case est dans la grille ou non
+  bool appartientAUnNavire(size_t, size_t);
   bool appartientATabCases(size_t, size_t);
+  bool appartientAGrille(size_t, size_t); // Permet de vérifier à partir de coordonnées x et y si la case est dans la grille ou non
+
+  bool peutDeplacer(Navire*, std::string);
+  
+  void afficher_tabNavires(Window&);
+  void afficher_tabCases(Window&);
   void afficher_grille(Window&);
 
   size_t getNbNaviresCoules();

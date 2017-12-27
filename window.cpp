@@ -46,7 +46,7 @@ void Window::update() const{
 }
 
 
-Window::Window(int h,int w, int x, int y, char c)
+Window::Window(size_t h,size_t w, size_t x, size_t y, char c)
   : height(h), width(w), startx(x), starty(y), bord(c)
 {
   colorwin=WCYAN;
@@ -70,32 +70,32 @@ Window::~Window(){
   delwin(win); 
 }
 
-void Window::print(int x, int y, std::string s, Color c) const {
+void Window::print(size_t x, size_t y, std::string s, Color c) const {
   wattron(win,COLOR_PAIR(c));
   mvwprintw(win,y,x,s.c_str());
   wattroff(win,COLOR_PAIR(c));
   update();  
 }
-void Window::print(int x, int y, char s, Color c) const{
+void Window::print(size_t x, size_t y, char s, Color c) const{
   wattron(win,COLOR_PAIR(c));
   mvwaddch(win,y,x,s);
   wattroff(win,COLOR_PAIR(c));
   update();
 }
-void Window::print(int x, int y, std::string s) const{
+void Window::print(size_t x, size_t y, std::string s) const{
   mvwprintw(win,y,x,s.c_str());
   update();  
 }
-void Window::print(int x, int y, char s) const{
+void Window::print(size_t x, size_t y, char s) const{
   mvwaddch(win,y,x,s);
   update();  
 }
 
 
-int Window::getX() const { return startx;} 
-int Window::getY() const { return starty;} 
-int Window::getHauteur() const { return height;} 
-int Window::getLargeur() const { return width;}  
+size_t Window::getX() const { return startx;} 
+size_t Window::getY() const { return starty;} 
+size_t Window::getHauteur() const { return height;} 
+size_t Window::getLargeur() const { return width;}  
 Color Window::getCouleurBordure() const{ return colorframe;}
 Color Window::getCouleurFenetre() const{ return colorwin;}
 void Window::setCouleurBordure(Color c){

@@ -62,14 +62,10 @@ void Joueur::setScore0(){
 void Joueur::setIA(){
 ia=true;}
 
-void Joueur::setId(size_t id){
-this->identifiant=id;
-}
-
 //void Joueur::setGrille(Grille grille){}
 
-//Grille Joueur::getGrille(){
-//return grille;}
+Grille Joueur::getGrille(){
+return grille;}
 
 
 
