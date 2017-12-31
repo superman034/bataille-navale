@@ -3,6 +3,8 @@
 
 Navire::Navire() : nbCases(0), tabCases(NULL), couleurNavire(WBLACK), etat(false) {}
 
+Navire::Navire(size_t n) : nbCases(n), tabCases(new Case[n]), couleurNavire(WBLACK), etat(false) {}
+
 // où x et y sont les pos de la première case du navire
 Navire::Navire(size_t n, size_t x, size_t y, Color c) : nbCases(n), tabCases(new Case[n]), couleurNavire(c), etat(false) {
   // Ce constructeur construit le navire de haut en bas
@@ -14,6 +16,27 @@ Navire::Navire(size_t n, size_t x, size_t y, Color c) : nbCases(n), tabCases(new
     tabCases[i].setX(x);
     tabCases[i].setY(y+i);
   }
+}
+
+void Navire::ajouterCase(size_t x, size_t y){ // Cette méthode sert uniquement pour construire un navire personnalisé
+  size_t newTaille = this->nbCases+1;
+  Navire nouveau(newTaille);
+  nouveau.couleurNavire = this->couleurNavire;
+  
+  // Copie de l'ancien tableau :
+  if(this->nbCases != 0){
+  for(size_t i=0; i<this->nbCases;i++)
+    nouveau.tabCases[i] = this->tabCases[i];
+  }
+  
+  // Ajout de la nouvelle case :
+  size_t caseAjoutee = this->nbCases;
+  nouveau.tabCases[caseAjoutee].setX(x);
+  nouveau.tabCases[caseAjoutee].setY(y);
+  nouveau.tabCases[caseAjoutee].setLibre(false);
+  nouveau.tabCases[caseAjoutee].setOccupee(true);
+
+  *this = nouveau;
 }
 
 Navire::Navire(const Navire& N) : nbCases(N.nbCases), tabCases(new Case[N.nbCases]), couleurNavire(N.couleurNavire), etat(N.etat){
@@ -37,7 +60,7 @@ Navire& Navire::operator=(const Navire& N) {
   return *this;
 }
 
-Navire& Navire::operator=(const Navire* N) {
+/*Navire& Navire::operator=(const Navire* N) {
   if (this!=N){
     delete[] tabCases;
     tabCases=new Case[N->nbCases];
@@ -50,7 +73,7 @@ Navire& Navire::operator=(const Navire* N) {
     }    
   }
   return *this;
-}
+  }*/
 
 bool Navire::operator==(const Navire& N) {
   if(this!=&N){
@@ -101,6 +124,23 @@ void Navire::deplacerNavireGauche() {
   for(size_t i=0;i< this->nbCases;i++)
     tabCases[i].setX( tabCases[i].getX()-1);
 }
+
+void Navire::deplacerNavire(size_t x, size_t y){
+  int ecartX[nbCases], ecartY[nbCases];
+  for(size_t i=1; i<this->nbCases;i++){
+    ecartX[i] = tabCases[i].getX() - tabCases[0].getX();
+    ecartY[i] = tabCases[i].getY() - tabCases[0].getY();
+  }
+
+  tabCases[0].setX(x);
+  tabCases[0].setY(y);
+
+  for(size_t i=1; i<nbCases;i++){
+    tabCases[i].setX(x+ecartX[i]);
+    tabCases[i].setY(y+ecartY[i]);
+  }
+}
+
 void Navire::PivoterNavireGauche(){
   size_t sauv=0;
   for(size_t i=0;i< this->nbCases;i++){
@@ -160,14 +200,20 @@ size_t Navire::X_max_case_navire(){
   return maxX;
 }
 
-// accesseur en size_terrogation
-size_t Navire::nb_cases_touchees() const {size_t k = 0; for(size_t i = 0; i < nbCases; i++) { if (tabCases[i].getTouchee() == true) k ++; } return k; }
+size_t Navire::nb_cases_touchees() {
+  size_t k = 0;
+  for(size_t i = 0; i < nbCases; i++){
+    if (tabCases[i].getTouchee() == true)
+      k++;
+  }
+  return k;
+}
 
 Case& Navire::at(size_t i)      {return tabCases[i];}
 const Case& Navire::at(size_t i) const  {return tabCases[i];}
 
 Case* Navire::findCase(size_t X, size_t Y) {
-  for(int i=0; i<nbCases;i++){
+  for(size_t i=0; i<nbCases;i++){
     if (tabCases[i].getX() == X && tabCases[i].getY() == Y)
       return &tabCases[i];
   }
@@ -182,13 +228,20 @@ bool Navire::estDansNavire(size_t x, size_t y) const {
   return false;
 }
 
-bool Navire::verifCoule() { if (nb_cases_touchees() == nbCases) {setEtat(true); return true; } else return false; }
+bool Navire::verifCoule() {
+  if (nb_cases_touchees() == nbCases){
+    etat = true;
+    return true;
+  }
+  else
+    return false;
+}
 
 // permet d'afficher toutes les cases du navire suivant leur position dans la grille.
 void Navire::afficher_navire(Window& W, Color col, char p) {
   for(size_t i=0;i<nbCases;i++){
     if (tabCases[i].getTouchee() == true)
-      tabCases[i].afficher_case(W, col, 'X');
+      tabCases[i].afficher_case(W, col, 'X'); // On représente les cases de navires touchées par des croix
     else
       tabCases[i].afficher_case(W, col, p);
   }
@@ -199,4 +252,3 @@ void Navire::supprimer_navire(Window& W){
 for(size_t i=0;i<nbCases;i++)
     tabCases[i].supprimer_case(W);
 }
-

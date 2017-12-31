@@ -3,7 +3,7 @@
 
 // Constructeurs
 
-Case::Case() :  X(0), Y(0), libre(true), occupee(false), touchee(false) { }
+Case::Case() :  X(0), Y(0), libre(true), occupee(false), touchee(false) {}
 
 Case::Case(size_t x, size_t y) :  X(x), Y(y), libre(true), occupee(false), touchee(false) { }
 // Libre true, occupee false pour les cases en dehors des navires

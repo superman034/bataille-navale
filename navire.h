@@ -14,10 +14,13 @@ class Navire{
   
  public:
   Navire();
+  Navire(size_t);
   Navire(size_t, size_t, size_t, Color); // Par défaut, un navire est initialisé par un tableau dynamique de n cases occupées et non touchées.
+  Navire(size_t x, size_t y, Color c); // Constructeur d'un navire personnalisé où l'on envoie que la première case, le reste est ajoutée avec la méthode ajouterCase.
+  void ajouterCase(size_t x, size_t y);
   Navire(const Navire&); // Constructeur par copie
   Navire& operator=(const Navire&); // Par affectation
-  Navire& operator=(const Navire*);
+  // Navire& operator=(const Navire*);
   bool operator==(const Navire&);
   bool operator!=(const Navire&);
   ~Navire(); // Le destructeur désalloue le tableau dynamique des cases du navire.
@@ -35,6 +38,8 @@ class Navire{
   void deplacerNavireDroite();
   void deplacerNavireGauche();
 
+  void deplacerNavire(size_t, size_t);
+
   void PivoterNavireGauche();
   void PivoterNavireDroite();
 
@@ -45,8 +50,10 @@ class Navire{
 
   Case& at(size_t i);
   const Case& at(size_t i) const;
+
+  // bool peutDeplacer(Grille&, char**);
  
-  size_t nb_cases_touchees()    const;
+  size_t nb_cases_touchees();
   bool estDansNavire(size_t, size_t) const; // Vérifie si une case donnée est dans un navire
   
   bool verifCoule();
