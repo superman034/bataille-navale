@@ -75,5 +75,5 @@ class f{
 };
 
 bool identique(const Case& C1,const Case& C2){
-  return (C1.getX()==C2.getX()) && (C1.getY()==C2.getY()) && (C1.getLibre()==C2.getLibre()) && (C1.getOccupee()==C2.getOccupee()) && (C1.getTouchee()==C2.getTouchee()); 
+  return (C1.getX()==C2.getX()) && (C1.getY()==C2.getY());// && (C1.getLibre()==C2.getLibre()) && (C1.getOccupee()==C2.getOccupee()) && (C1.getTouchee()==C2.getTouchee()); 
 }

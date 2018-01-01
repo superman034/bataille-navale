@@ -16,6 +16,7 @@ class Case{
 
   Case();     //Constructeur
   Case(size_t, size_t);
+  Case(size_t, size_t, bool, bool, bool);
   bool operator==(const Case&);
   bool operator!=(const Case&);
 

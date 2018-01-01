@@ -11,6 +11,7 @@ class Navire{
   Case *tabCases; // Un navire est un tableau de cases
   Color couleurNavire;
   bool etat; // true = navire coulé, false si non
+  int angle; // Utile pour la rotation
   
  public:
   Navire();
@@ -39,7 +40,9 @@ class Navire{
   void deplacerNavireGauche();
 
   void deplacerNavire(size_t, size_t);
-
+  
+  void PivoterNavireHaut();
+  void PivoterNavireBas();
   void PivoterNavireGauche();
   void PivoterNavireDroite();
 
@@ -50,16 +53,14 @@ class Navire{
 
   Case& at(size_t i);
   const Case& at(size_t i) const;
-
-  // bool peutDeplacer(Grille&, char**);
  
   size_t nb_cases_touchees();
-  bool estDansNavire(size_t, size_t) const; // Vérifie si une case donnée est dans un navire
+  bool estDansNavire(size_t, size_t) const; // Vérifie si deux coordonnées données correspondent à une case d'un navire
   
   bool verifCoule();
   Case* findCase(size_t, size_t);
 
-  // permet d'afficher toutes les cases du navire suivant leur position dans la grille.
+  // permet d'afficher graphiquement toutes les cases du navire suivant leur position.
   void afficher_navire(Window&, Color, char);
   void supprimer_navire(Window&);
   

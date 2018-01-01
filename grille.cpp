@@ -190,8 +190,12 @@ void Grille::afficher_tabNavires(Window& W){
 void Grille::afficher_tabCases(Window& W) {
   // Affichage des cases hors navires
   if (tabCases.size() > 0)
-    for(size_t i=0;i<=tabCases.size();i++)
-      tabCases.at(i).afficher_case(W, WBLACK, 'O');
+    for(size_t i=0;i<=tabCases.size();i++){
+      if (tabCases.at(i).getLibre() == false && tabCases.at(i).getOccupee() == true)
+	tabCases.at(i).afficher_case(W, WBLACK, 'X');
+      else
+	tabCases.at(i).afficher_case(W, WBLACK, 'O');
+    }
 }
 
 // permet d'afficher la grille complète soit : les 5 navires + le tableau de cases contenant les tirs manqués

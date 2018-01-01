@@ -22,6 +22,7 @@ void Navire::ajouterCase(size_t x, size_t y){ // Cette méthode sert uniquement 
   size_t newTaille = this->nbCases+1;
   Navire nouveau(newTaille);
   nouveau.couleurNavire = this->couleurNavire;
+  nouveau.nbCases = this->nbCases+1;
   
   // Copie de l'ancien tableau :
   if(this->nbCases != 0){
@@ -141,7 +142,7 @@ void Navire::deplacerNavire(size_t x, size_t y){
   }
 }
 
-void Navire::PivoterNavireGauche(){
+void Navire::PivoterNavireHaut(){
   size_t sauv=0;
   for(size_t i=0;i< this->nbCases;i++){
     sauv=tabCases[i].getX();
@@ -150,7 +151,25 @@ void Navire::PivoterNavireGauche(){
   }
 }
 
+void Navire::PivoterNavireBas(){
+  size_t sauv=0;
+  for(size_t i=0;i< this->nbCases;i++){
+    sauv=tabCases[i].getX();
+    tabCases[i].setX( tabCases[i].getY());
+    tabCases[i].setY( sauv);
+  }
+}
+
+
 void Navire::PivoterNavireDroite(){
+  size_t sauv=0;
+  for(size_t i=0;i< this->nbCases;i++){
+    sauv=tabCases[i].getX();
+    tabCases[i].setX( tabCases[i].getY());
+    tabCases[i].setY( sauv);
+  }
+}
+void Navire::PivoterNavireGauche(){
   size_t sauv=0;
   for(size_t i=0;i< this->nbCases;i++){
     sauv=tabCases[i].getX();

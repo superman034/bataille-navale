@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// Le code passé en commentaire a servi à effectuer des tests sur ce programme
+
 /*void afficher_case(Case& C){
   cout << "X: " <<  C.getX() << "Y: " << C.getY() << endl;
 }

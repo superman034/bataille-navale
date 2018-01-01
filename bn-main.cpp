@@ -18,6 +18,7 @@ void tirer(Window& fenetreDeTir, Grille& grilleDeTir){ // Pas fini
   char p='X';
   Color col=WBLACK;
   fenetreDeTir.print(x,y,p,col);
+  grilleDeTir.afficher_grille(fenetreDeTir);
   
   while(!tir)
     {     
@@ -130,9 +131,23 @@ void tirer(Window& fenetreDeTir, Grille& grilleDeTir){ // Pas fini
 	
       case 32: // Valeur ASCII pour désigner la touche espace
 	fenetreDeTir.print(x,y,' ', col);
-	grilleDeTir.ajouterCase(Case(x, y));
-	//grilleDeTir.afficher_grille(fenetreDeTir);test
-	grilleDeTir.afficher_tabCases(fenetreDeTir);
+	if(grilleDeTir.appartientAUnNavire(x, y) == true){
+	  Navire* N = grilleDeTir.aQuelNavireAppartientCase(x, y);
+	  if(N != NULL){
+	    Case* C = N->findCase(x,y);
+	    if(C->getTouchee() == false){
+	      C->setTouchee(true);
+	      grilleDeTir.ajouterCase(Case(x,y,false,true,true));
+	      grilleDeTir.afficher_tabCases(fenetreDeTir);
+	    }
+	  }
+	}
+	
+	else{
+	  grilleDeTir.ajouterCase(Case(x, y));
+	  grilleDeTir.afficher_tabCases(fenetreDeTir);
+	}
+	
 	tir = true;
 	break;
       }
@@ -140,15 +155,6 @@ void tirer(Window& fenetreDeTir, Grille& grilleDeTir){ // Pas fini
 }
 
 void lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA){
-  /*
-    Tirage au sort
-    Si joueur commence -> tirerGrille(IA)
-    Si IA commence -> tirIAsurJoueur(joueur)
-    while grille.getNbBateauxCoules != nbBateaux
-    sinon il perd
-
-  */
-  
   size_t first = rand() % 2;
   bool fin = false;
   while (!fin){
@@ -159,19 +165,19 @@ void lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA){
       else{
 	Joueur.tirCase(joueur);
 	Joueur.afficher_grille(joueur);
-	if (IA.getNbNaviresCoules() == 5)
+	if (Joueur.getNbNaviresCoules() == 5)
 	  fin = true;
       }
     }
     
-    if (first == 1){
+    if (first == 1){ // L'IA commence
       Joueur.tirCase(joueur);
       if (Joueur.getNbNaviresCoules() == 5)
 	fin = true;
       else{
 	Joueur.afficher_grille(joueur);
 	tirer(ia, IA);
-	if (Joueur.getNbNaviresCoules() == 5)
+	if (IA.getNbNaviresCoules() == 5)
 	  fin = true;
       }
     }
@@ -379,17 +385,17 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
 
 void init(){
   int h=20,w=20;
-  Window menu(3,30,1,0);
+  Window titre(3,30,12,0);
   Window joueur(h,w,2,6);
   Window ia(h,w,29,6);
   Window flotte(8,20,6,32);
   
-  menu.setCouleurBordure(BRED);
+  titre.setCouleurBordure(BRED);
   joueur.setCouleurBordure(BBLUE);
   ia.setCouleurBordure(BBLUE);
   flotte.setCouleurBordure(BBLUE);
   
-  menu.print(1,1,"Tapez q pour quitter !!!", WRED);
+  titre.print(8,1,"Bataille navale", WRED);
 
   Navire porteAvions(5, 2, 2, BBLUE);
   Navire croiseur(4, 4, 2, BGREEN);
@@ -411,11 +417,12 @@ void init(){
   //Grille Flotte(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
 
   Grille Flotte(tabPerso[0], tabPerso[1], tabPerso[2], tabPerso[3], tabPerso[4]);
+  Grille IA = Flotte;
   Grille Joueur;
   /* Grille IA;
   initGrille(IA); // Place des navires automatiquement
   */
-  Grille IA(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
+  // Grille IA(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
   
   Flotte.afficher_grille(flotte);
   

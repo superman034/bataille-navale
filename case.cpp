@@ -5,7 +5,9 @@
 
 Case::Case() :  X(0), Y(0), libre(true), occupee(false), touchee(false) {}
 
-Case::Case(size_t x, size_t y) :  X(x), Y(y), libre(true), occupee(false), touchee(false) { }
+Case::Case(size_t x, size_t y) :  X(x), Y(y), libre(true), occupee(false), touchee(false) {}
+
+Case::Case(size_t x, size_t y, bool l, bool o, bool t) :  X(x), Y(y), libre(l), occupee(o), touchee(t) {}
 // Libre true, occupee false pour les cases en dehors des navires
 // Libre false, occupee true pour les cases de navire
 // On initialise toujours touchee à false
