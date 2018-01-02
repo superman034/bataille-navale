@@ -21,9 +21,12 @@ class Navire{
   void ajouterCase(size_t x, size_t y);
   Navire(const Navire&); // Constructeur par copie
   Navire& operator=(const Navire&); // Par affectation
-  // Navire& operator=(const Navire*);
+  Navire& operator=(const Navire*);
   bool operator==(const Navire&);
+  // bool operator==(const Navire*);
   bool operator!=(const Navire&);
+  //bool operator!=(const Navire*);
+  
   ~Navire(); // Le destructeur désalloue le tableau dynamique des cases du navire.
 
   bool getEtat() const; // Si toutes les cases du navire sont touchées, alors le navire coule. Renvoie true si il est coulé.

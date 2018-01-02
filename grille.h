@@ -25,6 +25,8 @@ public:
   void ajouterNavire(const Navire&, Window&);
   void enleverNavire(size_t, Window&);
   size_t findNavire(const Navire*);
+  size_t findNavire(const Navire&);
+  Navire& getNavire(size_t);
   void ajouterCase(const Case&);
   Navire* aQuelNavireAppartientCase(size_t, size_t);
   

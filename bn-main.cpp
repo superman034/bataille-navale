@@ -17,6 +17,18 @@ void tirer(Window& fenetreDeTir, Grille& grilleDeTir){ // Pas fini
   bool tir = false;
   char p='X';
   Color col=WBLACK;
+  
+  if (grilleDeTir.appartientATabCases(x, y) == true){ // Code pour afficher le viseur pour tirer à la prochaine case vide
+    while (grilleDeTir.appartientATabCases(x, y) != false){
+      if (x+1 >= fenetreDeTir.getLargeur()){
+	y++;
+	x=0;
+      }
+      else
+	x++;
+    }
+  }
+  
   fenetreDeTir.print(x,y,p,col);
   grilleDeTir.afficher_grille(fenetreDeTir);
   
@@ -359,18 +371,44 @@ void selectionnerNavire(Window& flotte, Window& joueur, Grille& Flotte, Grille& 
       case 10: // Valeur ASCII pour désigner la touche entrée
 	if (Flotte.appartientAGrille(x, y) == true){
 	  
-	  Navire* ptr = Flotte.aQuelNavireAppartientCase(x, y);
-	  Navire aDeplacer = *ptr;
-	  // On enlève le navire séléctionné de la grille Flotte pour l'ajouter à la grille Joueur :
-	  
-	  Joueur.ajouterNavire(aDeplacer, joueur);
-	  Flotte.enleverNavire(Flotte.findNavire(ptr), flotte); // Suppression de la donnée du navire dans la grille Flotte
+	  Navire* aSupprimer = Flotte.aQuelNavireAppartientCase(x,y);
+	  Navire aDeplacer = *aSupprimer;
 
-	  Navire* ptr2 = Joueur.aQuelNavireAppartientCase(x, y);
+	  // L'algorithme suivant sert à éviter que l'on place un navire sur un navire qui a déjà été placé auparavant
+	  // Le code détermine la prochaine position valide pour pouvoir y insérer le navire que l'on veut placer
+	  // Une position valide est une position où la superficie entière du navire ne doit pas dépasser la fenêtre et où aucune case navire ne touche la case d'un autre navire
+
+	  bool chevauchement = false; 
+	  for(size_t i=0; i<aDeplacer.getNbCases(); i++){
+	    for(size_t i=0; i<aDeplacer.getNbCases(); i++){ // On parcourt chaque case du navire qu'on veut placer
+	      Navire p;
+	      if(Joueur.aQuelNavireAppartientCase(x,y)!= NULL) p = Joueur.aQuelNavireAppartientCase(x,y);
+	      if(Joueur.appartientAUnNavire(aDeplacer.at(i).getX(), aDeplacer.at(i).getY()) == true && p != aDeplacer) // Si à la position d'une case du navire est occupée dans l'autre grille
+		chevauchement = true;
+	    }
+	  }
+
+	  if (chevauchement == true){
+	    for(size_t i=0; i<aDeplacer.getNbCases(); i++){
+	      Navire p;
+	      if(Joueur.aQuelNavireAppartientCase(x,y)!= NULL) p = Joueur.aQuelNavireAppartientCase(x,y);
+	      while(Joueur.appartientAUnNavire(aDeplacer.at(i).getX(), aDeplacer.at(i).getY()) != false && p != aDeplacer){ // On répète l'action tant qu'on n'a pas une position valide
+		aDeplacer.deplacerNavireDroite();
+		if (aDeplacer.X_max_case_navire() >= joueur.getLargeur()){ // Si après avoir déplacé le navire vers la droite et que la case la plus à droite du navire sort de la fenere
+		  aDeplacer.deplacerNavire(0,aDeplacer.at(0).getY()+1); // On remet alors le navire à la position x=0, en augmantant y de 1, comme un retour chariot
+		}
+	      }
+	      // En sortant de la boucle, le navire sera placé à la position valide trouvée
+	    }
+	  }
+
+	  // On enlève le navire séléctionné de la grille Flotte pour l'ajouter à la grille Joueur :
+	  Joueur.ajouterNavire(aDeplacer, joueur);
+	  Flotte.enleverNavire(Flotte.findNavire(aSupprimer), flotte); // Suppression de la donnée du navire dans la grille Flotte
+
+	  Navire* test = &(Joueur.getNavire(Joueur.findNavire(aDeplacer))); // Pointeur sur le navire qu'on vient de deplacer et placé pour pouvoir le déplacer avec la fonction placerNavire	  
+	  placerNavire(joueur, Joueur, test);
 	  
-	  //Joueur.afficher_grille(joueur);
-	  
-	  placerNavire(joueur, Joueur, ptr2);
 	  nbNaviresPlaces++;
 	  
 	  flotte.print(x,y,p,col);

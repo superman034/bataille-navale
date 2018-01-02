@@ -60,6 +60,18 @@ size_t Grille::findNavire(const Navire* N){
   return -1;
 }
 
+size_t Grille::findNavire(const Navire& N){
+  for(size_t i=0;i<5;i++){
+    if (tabNavires[i] == N) // On utilise la surcharge d'opérateur == de la classe Navire
+      return i;
+  }
+  return -1;
+}
+
+Navire& Grille::getNavire(size_t i){
+  return tabNavires[i];
+}
+
 /*bool Grille::appartientAGrille(size_t x, size_t y) {
   for(size_t i=0;i<5;i++){
     if (tabNavires[i].getNbCases() > 0){

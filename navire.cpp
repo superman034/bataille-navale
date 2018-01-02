@@ -61,7 +61,7 @@ Navire& Navire::operator=(const Navire& N) {
   return *this;
 }
 
-/*Navire& Navire::operator=(const Navire* N) {
+Navire& Navire::operator=(const Navire* N) {
   if (this!=N){
     delete[] tabCases;
     tabCases=new Case[N->nbCases];
@@ -74,7 +74,7 @@ Navire& Navire::operator=(const Navire& N) {
     }    
   }
   return *this;
-  }*/
+  }
 
 bool Navire::operator==(const Navire& N) {
   if(this!=&N){
@@ -94,9 +94,31 @@ bool Navire::operator==(const Navire& N) {
     return true;
 }
 
+/*bool Navire::operator==(const Navire* N) {
+  if(this!=N){
+    if(couleurNavire == N->couleurNavire && etat == N->etat && nbCases == N->nbCases){
+      for(size_t i=0;i<nbCases;i++){
+	if(tabCases[i] != N->tabCases[i]) // On utilise la surcharge d'opérateur != de la classe Case
+	  return false;
+      }
+      return true;
+    }
+    
+    else
+      return false;
+	
+  }
+  else
+    return true;
+    }*/
+
 bool Navire::operator!=(const Navire& N1){
   return !(*this == N1);
 }
+
+/*bool Navire::operator!=(const Navire* N1){
+  return !(this == N1);
+  }*/
 
 
 Navire::~Navire() { if(tabCases != NULL) delete[] tabCases; }
