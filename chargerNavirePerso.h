@@ -7,6 +7,6 @@
 
 void traiterCase(char, Navire *, size_t, size_t);
 void definirCouleur(std::string, Navire*);
-Navire* chargerNavirePerso();
+Navire* chargerNavirePerso(std::string);
 
 #endif

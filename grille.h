@@ -27,7 +27,6 @@ public:
   void enleverNavire(size_t, Window&);
   size_t findNavire(const Navire*);
   size_t findNavire(const Navire&);
-  Navire& getNavire(size_t);
   void ajouterCase(const Case&);
   Navire* aQuelNavireAppartientCase(size_t, size_t);
   
@@ -44,8 +43,19 @@ public:
   void afficher_tabCases(Window&);
   void afficher_grille(Window&);
 
+  Navire& getNavire( size_t );
+  Navire* getNavire2(size_t );
+
   size_t getNbNaviresCoules();
   void calculNbNaviresCoules();
+
+  //---methode utilisée seulment pour le placement aléatoire des navires non perso--//
+  bool appartient_tab(size_t tab[] , size_t );
+  void ajoute_a_tab(size_t tab[], size_t k , size_t position);
+  //--------------------------------------//
+
+  void placer_hasard_navire_non_perso(Window&);
+  void placer_hasard_navire_perso(Window&);
     
 };
 

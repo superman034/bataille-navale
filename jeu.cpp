@@ -1,19 +1,21 @@
 #include <iostream>
 #include <stdlib.h> // Pour la fonction rand()
+#include <cassert>
 #include "jeu.h"
 #include "window.h"
 #include "navire.h"
 #include "case.h"
 #include "grille.h"
 #include "chargerNavirePerso.h"
-
+#include "logs.h"
 
 #define SN '-'// SN = Le symbole affiché à chaque case d'un navire
-#define HAUT_LARG_GRILLE_MIN 10
+#define HAUT_LARG_GRILLE_MIN 20
 
 Jeu::Jeu(){
 	this->nombreJoueurs=0;
 	this->nombreJoueursHumains=0;
+	temps = clock();
 }
 
 Jeu::~Jeu(){
@@ -220,10 +222,10 @@ void Jeu::setDimFenetre(){
   hautFenetre = h;
 }
 
-void Jeu::demarrer(){
+void Jeu::demarrer(std::string nomfichier){
   setNomsJoueurs();
   startProgramX();
-  init();
+  init(nomfichier);
   stopProgramX();
 }
 
@@ -240,16 +242,19 @@ return nombreJoueursHumains;}
 //bn-main
 
 
-void Jeu::tirer(Window& fenetreDeTir, Grille grilleDeTir){ // Pas fini
+void Jeu::tirer(size_t numCible){ // Pas fini
   size_t ch;
   size_t x=0, y=0;
   bool tir = false;
   char p='X';
   Color col=WBLACK;
+
+  Grille* grilleDeTir = &(listeJoueurs[numCible].getGrille());
+  Window* fenetreDeTir = &(listeJoueurs[numCible].getFenetre());
   
-  if (grilleDeTir.appartientATabCases(x, y) == true){ // Code pour afficher le viseur pour tirer à la prochaine case vide
-    while (grilleDeTir.appartientATabCases(x, y) != false){
-      if (x+1 >= fenetreDeTir.getLargeur()){
+  if (grilleDeTir->appartientATabCases(x, y) == true){ // Code pour afficher le viseur pour tirer à la prochaine case vide
+    while (grilleDeTir->appartientATabCases(x, y) != false){
+      if (x+1 >= fenetreDeTir->getLargeur()){
 	y++;
 	x=0;
       }
@@ -258,24 +263,24 @@ void Jeu::tirer(Window& fenetreDeTir, Grille grilleDeTir){ // Pas fini
     }
   }
   
-  fenetreDeTir.print(x,y,p,col);
-  grilleDeTir.afficher_grille(fenetreDeTir);
+  fenetreDeTir->print(x,y,p,col);
+  grilleDeTir->afficher_grille(*fenetreDeTir);
   
   while(!tir)
     {     
       switch (ch = getch()) {
       case KEY_UP:
-	if (y != 0 && grilleDeTir.appartientATabCases(x, y-1) == false){
-	  fenetreDeTir.print(x,y,' ', col);
+	if (y != 0 && grilleDeTir->appartientATabCases(x, y-1) == false){
+	  fenetreDeTir->print(x,y,' ', col);
 	  y--;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 
 	else{
 	  int i = 2;
 	  bool exit = false;
 	  while(!exit){ // On fait une boucle pour trouver la prochaine case que l'on peut atteindre
-	    if(grilleDeTir.appartientATabCases(x, y-i) == false){
+	    if(grilleDeTir->appartientATabCases(x, y-i) == false){
 	      exit = true; // On a trouvé la prochaine case
 	    }
 	    else
@@ -285,50 +290,50 @@ void Jeu::tirer(Window& fenetreDeTir, Grille grilleDeTir){ // Pas fini
 	  if(aux < 0){ // Si la case qu'on a trouvée sort de la fenêtre, on ne fait rien et on reste à la même coordonnée, donc i = 0
 	    i = 0;
 	  }
-	  fenetreDeTir.print(x,y,' ', col);
+	  fenetreDeTir->print(x,y,' ', col);
 	  y-=i;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 	break;
 	
       case KEY_DOWN:
-	if (y+1 != fenetreDeTir.getHauteur() && grilleDeTir.appartientATabCases(x, y+1) == false){
-	  fenetreDeTir.print(x,y,' ', col);
+	if (y+1 != fenetreDeTir->getHauteur() && grilleDeTir->appartientATabCases(x, y+1) == false){
+	  fenetreDeTir->print(x,y,' ', col);
 	  y++;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 
 	else{
 	  int i = 2;
 	  bool exit = false;
 	  while(!exit){ // On fait une boucle pour trouver la prochaine case que l'on peut atteindre
-	    if(grilleDeTir.appartientATabCases(x, y+i) == false){
+	    if(grilleDeTir->appartientATabCases(x, y+i) == false){
 	      exit = true; // On a trouvé la prochaine case
 	    }
 	    else
 	      i++;
 	  }
-	  if(y+i >= fenetreDeTir.getHauteur()){
+	  if(y+i >= fenetreDeTir->getHauteur()){
 	    i = 0;
 	  }
-	  fenetreDeTir.print(x,y,' ', col);
+	  fenetreDeTir->print(x,y,' ', col);
 	  y+=i;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 	break;
 	
       case KEY_LEFT:
-	if (x != 0 && grilleDeTir.appartientATabCases(x-1, y) == false){
-	  fenetreDeTir.print(x,y,' ', col);
+	if (x != 0 && grilleDeTir->appartientATabCases(x-1, y) == false){
+	  fenetreDeTir->print(x,y,' ', col);
 	  x--;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 
 	else{
 	  int i = 2;
 	  bool exit = false;
 	  while(!exit){ // On fait une boucle pour trouver la prochaine case que l'on peut atteindre
-	    if(grilleDeTir.appartientATabCases(x-i, y) == false){
+	    if(grilleDeTir->appartientATabCases(x-i, y) == false){
 	      exit = true; // On a trouvé la prochaine case
 	    }
 	    else
@@ -338,55 +343,55 @@ void Jeu::tirer(Window& fenetreDeTir, Grille grilleDeTir){ // Pas fini
 	  if(aux < 0){
 	    i = 0;
 	  }
-	  fenetreDeTir.print(x,y,' ', col);
+	  fenetreDeTir->print(x,y,' ', col);
 	  x-=i;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 	break;
 	
       case KEY_RIGHT:
-	if (x+1 != fenetreDeTir.getLargeur() && grilleDeTir.appartientATabCases(x+1, y) == false){
-	  fenetreDeTir.print(x,y,' ', col);
+	if (x+1 != fenetreDeTir->getLargeur() && grilleDeTir->appartientATabCases(x+1, y) == false){
+	  fenetreDeTir->print(x,y,' ', col);
 	  x++;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 
 	else{
 	  int i = 2;
 	  bool exit = false;
 	  while(!exit){ // On fait une boucle pour trouver la prochaine case que l'on peut atteindre
-	    if(grilleDeTir.appartientATabCases(x+i, y) == false){
+	    if(grilleDeTir->appartientATabCases(x+i, y) == false){
 	      exit = true; // On a trouvé la prochaine case
 	    }
 	    else
 	      i++;
 	  }
-	  if(x+i >= fenetreDeTir.getLargeur()){ // Si la case qu'on a trouvée sort de la fenêtre, on ne fait rien et on reste à la même coordonnée, donc i = 0
+	  if(x+i >= fenetreDeTir->getLargeur()){ // Si la case qu'on a trouvée sort de la fenêtre, on ne fait rien et on reste à la même coordonnée, donc i = 0
 	    i = 0;
 	  }
-	  fenetreDeTir.print(x,y,' ', col);
+	  fenetreDeTir->print(x,y,' ', col);
 	  x+=i;
-	  fenetreDeTir.print(x,y,p, col);
+	  fenetreDeTir->print(x,y,p, col);
 	}
 	break;
 	
       case 32: // Valeur ASCII pour désigner la touche espace
-	fenetreDeTir.print(x,y,' ', col);
-	if(grilleDeTir.appartientAUnNavire(x, y) == true){
-	  Navire* N = grilleDeTir.aQuelNavireAppartientCase(x, y);
+	fenetreDeTir->print(x,y,' ', col);
+	if(grilleDeTir->appartientAUnNavire(x, y) == true){
+	  Navire* N = grilleDeTir->aQuelNavireAppartientCase(x, y);
 	  if(N != NULL){
 	    Case* C = N->findCase(x,y);
 	    if(C->getTouchee() == false){
 	      C->setTouchee(true);
-	      grilleDeTir.ajouterCase(Case(x,y,false,true,true));
-	      grilleDeTir.afficher_tabCases(fenetreDeTir);
+	      grilleDeTir->ajouterCase(Case(x,y,false,true,true));
+	      grilleDeTir->afficher_tabCases(*fenetreDeTir);
 	    }
 	  }
 	}
 	
 	else{
-	  grilleDeTir.ajouterCase(Case(x, y));
-	  grilleDeTir.afficher_tabCases(fenetreDeTir);
+	  grilleDeTir->ajouterCase(Case(x, y));
+	  grilleDeTir->afficher_tabCases(*fenetreDeTir);
 	}
 	
 	tir = true;
@@ -395,8 +400,8 @@ void Jeu::tirer(Window& fenetreDeTir, Grille grilleDeTir){ // Pas fini
     }
 }
 
-void Jeu::lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA){
-  size_t first = rand() % 2;
+void Jeu::lancerPartie(){
+  /* size_t first = rand() % 2;
   bool fin = false;
   while (!fin){
     if (first == 0){ // Le joueur commence, il tire
@@ -424,7 +429,20 @@ void Jeu::lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA){
     }
 
   }
-
+  */
+  /*
+  size_t first = rand() % nombreJoueurs-1; // Le joueur ou l'IA qui commence en premier
+  bool fin=false;
+  while(true){
+    if(listeJoueurs[first].getIA() == true){
+      do{
+	size_t cible = rand() % nombreJoueurs-1;
+      }while(cible == first);
+      
+      tirer(cible);
+    }
+    
+  */
   // Mettre message de fin ici
 
 }
@@ -477,7 +495,6 @@ void Jeu::placerNavire(Window* joueur, Grille* Joueur, Navire* aDeplacer){
     }
 }
 
-//void Jeu::selectionnerNavire(Window& flotte, Window* joueur, Grille& Flotte, Grille* Joueur){
 void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
 
   size_t ch;
@@ -642,7 +659,7 @@ void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
 	  Joueur->ajouterNavire(aDeplacer, *joueur);
 	  Flotte.enleverNavire(Flotte.findNavire(aSupprimer), flotte); // Suppression de la donnée du navire dans la grille Flotte
 
-	  Navire* navire = &(Joueur->getNavire(Joueur->findNavire(aDeplacer))); // Pointeur sur le navire qu'on vient de deplacer et placé pour pouvoir le déplacer avec la fonction placerNavire
+	  Navire* navire = &(Joueur->getNavire(Joueur->findNavire(aDeplacer))); // Pointeur sur le navire dont on a transféré la grille, pour pouvoir le déplacer avec la fonction placerNavire
 	  placerNavire(joueur, Joueur, navire);
 	  
 	  nbNaviresPlaces++;
@@ -657,64 +674,111 @@ void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
     }
 }
 
-void Jeu::init(){
+void Jeu::init(std::string nomfichier){
+  // Suivant le mode, si l'utilisateur a choisi les modes personnalisé ou non on appelle la fonction suivante :
+  
+  Navire porteAvions(5, 2, 2, BBLUE);
+  Navire croiseur(4, 4, 2, BGREEN);
+  Navire contreTorpilleur(3, 6, 2, BYELLOW);
+  Navire sousMarin(3, 8, 2, BMAGENTA);
+  Navire torpilleur(2, 10, 2, BRED);
+  
+  Navire* tabNav = NULL;
+  bool perso = false;
+  if (nomfichier != "rien"){
+    tabNav = chargerNavirePerso(nomfichier);
+    assert(tabNav != NULL);
+    
+    perso = true;
+    tabNav[0].deplacerNavire(2, 1);
+    tabNav[1].deplacerNavire(7, 1);
+    tabNav[2].deplacerNavire(11, 1);
+    tabNav[3].deplacerNavire(13, 1);
+    tabNav[4].deplacerNavire(18, 1);
+  }
+
+  else
+    {
+      perso = false;
+      tabNav = new Navire[5];
+      tabNav[0] = porteAvions;
+      tabNav[1] = croiseur;
+      tabNav[2] = contreTorpilleur;
+      tabNav[3] = sousMarin;
+      tabNav[4] = torpilleur;
+    }
+  
   Window titre(3,30,12,0);
   titre.setCouleurBordure(BRED);
-
-  Window F(hautFenetre, largFenetre,2,6);
-  listeJoueurs[0].setFenetre(F); // <- PB
-  F.setCouleurBordure(BBLUE);
   
   size_t x = 5+largFenetre;
-  for(int i=1;i<nombreJoueurs;i++){
-    Window G(hautFenetre, largFenetre, x, 6);
-    listeJoueurs[i].setFenetre(G);
-    listeJoueurs[i].getFenetre().setCouleurBordure(BBLUE);			     
+
+  Window A(hautFenetre, largFenetre,2,6);
+  A.setCouleurBordure(BBLUE);
+  listeJoueurs[0].setFenetre(A); // <- PB
+  
+  Window B(hautFenetre, largFenetre, x, 6);
+  B.setCouleurBordure(BBLUE);
+  listeJoueurs[1].setFenetre(B);
+  x+=largFenetre+3;
+  
+  Window C(hautFenetre, largFenetre, x, 6);
+  if(nombreJoueurs>=3){
+    C.setCouleurBordure(BBLUE);
+    listeJoueurs[2].setFenetre(C);
     x+=largFenetre+3;
-    }
+  }
+  /*else{
+    C.clear();
+    C.~Window();
+    }*/
+
+  Window D(hautFenetre, largFenetre, x, 6);
+  if(nombreJoueurs==4){
+    D.setCouleurBordure(BBLUE);
+    listeJoueurs[3].setFenetre(D);
+  }
+  
+  /* else{
+     D.clear();
+     D.~Window();
+     }*/
   
   Window flotte(7,21,6,32);
   flotte.setCouleurBordure(BBLUE);
   
   titre.print(8,1,"Bataille navale", WRED);
 
-  Navire porteAvions(5, 2, 2, BBLUE);
-  Navire croiseur(4, 4, 2, BGREEN);
-  Navire contreTorpilleur(3, 6, 2, BYELLOW);
-  Navire sousMarin(3, 8, 2, BMAGENTA);
-  Navire torpilleur(2, 10, 2, BRED);
-
-  // Suivant le mode, si l'utilisateur a choisi les modes personnalisé ou non on appelle la fonction suivante :
-  
-  Navire* tabPerso;
-  tabPerso = chargerNavirePerso();
-
-  tabPerso[0].deplacerNavire(2, 1);
-  tabPerso[1].deplacerNavire(7, 1);
-  tabPerso[2].deplacerNavire(11, 1);
-  tabPerso[3].deplacerNavire(13, 1);
-  tabPerso[4].deplacerNavire(18, 1);
-
-  // Grille Flotte(tabPerso[0], tabPerso[1], tabPerso[2], tabPerso[3], tabPerso[4]);
-  //Flotte.afficher_grille(flotte);
-  
-  //Grille Flotte(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
-
   // Grille IA(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
-  
-  // Fonction pour que le joueur se déplace dans une grille donnée, ici la flotte et pour qu'il y séléctionne un navire
-  //selectionnerNavire(flotte, listeJoueurs[0].getFenetre(), Flotte, listeJoueurs[0].getGrille()); // Au début on a besoin de se déplacer dans la flotte pour accéder aux bateaux et les placer
+
+
   for(size_t i=0; i<nombreJoueurs; i++){
     if (listeJoueurs[i].getIA() == false){
-      Grille Flotte(tabPerso[0], tabPerso[1], tabPerso[2], tabPerso[3], tabPerso[4]);
+      Grille Flotte(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
       Flotte.afficher_grille(flotte);
-      selectionnerNavire(i, flotte, Flotte);
+      selectionnerNavire(i, flotte, Flotte); // Fonction pour que le joueur se déplace dans une grille donnée, ici la flotte et pour qu'il y séléctionne un navire
+      std::string nom = listeJoueurs[i].getNom();
+      std::string log = " a placé ses 5 navires";
+      ajouterAction(nom + log, temps);
+    }
+    else{
+      if (perso == true){
+	Grille IA(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
+	IA.placer_hasard_navire_perso(listeJoueurs[i].getFenetre());
+	listeJoueurs[i].setGrille(IA);
+      }
+      else{
+	Grille IA(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
+	IA.placer_hasard_navire_non_perso(listeJoueurs[i].getFenetre());
+	listeJoueurs[i].setGrille(IA);
+      }
+      std::string log = "Les navires de l'";
+      std::string nom = listeJoueurs[i].getNom();
+      std::string log2 = " ont été placés automatiquement";
+      ajouterAction(log + nom + log2, temps);
     }
   }
-  //else placer auto
-    
-     
-  //selectionnerNavire(flotte, joueur, Flotte, Joueur);
-  //lancerPartie(joueur, Joueur, ia, IA);
+         
+  lancerPartie();
   
 }

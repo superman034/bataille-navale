@@ -2,6 +2,7 @@
 #define JEU_H
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "joueur.h"
 #include "window.h"
 #include "navire.h"
@@ -12,13 +13,14 @@ class Jeu{
     
  private:
   size_t nombreJoueurs,nombreJoueursHumains,largFenetre,hautFenetre;
-  Joueur* listeJoueurs;//nom,identifiant,ia,score,nombre bateaux coulés
+  Joueur* listeJoueurs;
+  clock_t temps;
               
  public:
   Jeu();
   ~Jeu();
       
-  void demarrer(); 
+  void demarrer(std::string); 
   
   Joueur& getJoueur(size_t numJoueur);
   size_t getNbJoueurs();
@@ -28,12 +30,11 @@ class Jeu{
   void setNbJoueurs();
   void setDimFenetre();
     
-  void tirer(Window& fenetreDeTir, Grille grilleDeTir);
-  void lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA);
-  void placerNavire(Window* joueur, Grille* Joueur, Navire* aDeplacer);
-  //void selectionnerNavire(Window& flotte, Window* joueur, Grille& Flotte, Grille* Joueur);
+  void tirer(size_t);
+  void lancerPartie();
+  void placerNavire(Window*, Grille*, Navire*);
   void selectionnerNavire(size_t, Window&, Grille&);
-  void init();
+  void init(std::string);
    
     
 };

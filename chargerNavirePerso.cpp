@@ -47,13 +47,12 @@ void definirCouleur(string s, Navire* N){
     N->setCouleur(BBLUE);
 }
 
-Navire* chargerNavirePerso(){
-  string file = "navire.cfg";
+Navire* chargerNavirePerso(string file){
   ifstream input(file.c_str());
 
   if (!input.is_open()) {
     cerr << "Le fichier " << file << " n'a pas pu être ouvert." << endl;
-    terminate();
+    return NULL;
   }
 
   bool fin = false;

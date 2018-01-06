@@ -128,10 +128,10 @@ size_t Window::getLargeur() const { return width;}
 Color Window::getCouleurBordure() const{ return colorframe;}
 Color Window::getCouleurFenetre() const{ return colorwin;}
 
-void Window::setX(size_t x){startx = x;}
+/*void Window::setX(size_t x){startx = x;}
 void Window::setY(size_t y){starty = y;}
 void Window::setHauteur(size_t h){height = h;}
-void Window::setLargeur(size_t w){width = w;}
+void Window::setLargeur(size_t w){width = w;}*/
 
 
 void Window::setCouleurBordure(Color c){
