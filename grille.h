@@ -16,11 +16,12 @@ private:
   
   Navire tabNavires[5];
   TableauCase tabCases;
-  size_t nbNaviresCoules;
+  size_t nbNaviresCoules;	
 
 public:
   Grille();
   Grille(const Navire&, const Navire&, const Navire&, const Navire&, const Navire&); // constructeur
+  Grille& operator=(const Grille&);
 
   void ajouterNavire(const Navire&, Window&);
   void enleverNavire(size_t, Window&);

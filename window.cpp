@@ -1,8 +1,7 @@
 #include "window.h"
 
 
-void init_colors(void)
-{
+void init_colors(void){
   start_color();
   init_pair(WBLACK,   COLOR_WHITE, COLOR_BLACK);
   init_pair(WCYAN,    COLOR_WHITE, COLOR_CYAN);
@@ -37,18 +36,27 @@ void stopProgramX() {
   endwin();
 }
 
-
-
 void Window::update() const{
   wrefresh(win);
   wrefresh(frame);
   refresh();
 }
 
+Window::Window() : height(0), width(0), startx(0), starty(0), bord('+'){
+  colorwin=WCYAN;
+  colorframe=WBLACK;
+  frame=newwin(2,2,0,0);
+  win=subwin(frame,0,0,1,1);
+  wbkgd(frame,COLOR_PAIR(colorwin));
+  wbkgd(win,COLOR_PAIR(colorframe));
+  wborder(frame, '+','+','+','+','+','+','+','+');
+  wattron(win,COLOR_PAIR(colorwin));
+  wattron(frame,COLOR_PAIR(colorframe));
+  update();
+}
 
 Window::Window(size_t h,size_t w, size_t x, size_t y, char c)
-  : height(h), width(w), startx(x), starty(y), bord(c)
-{
+  : height(h), width(w), startx(x), starty(y), bord(c){
   colorwin=WCYAN;
   colorframe=WBLACK;
   frame=newwin(h+2,w+2,y,x);
@@ -60,6 +68,28 @@ Window::Window(size_t h,size_t w, size_t x, size_t y, char c)
   wattron(frame,COLOR_PAIR(colorframe));
   update();
 }
+
+/*Window& Window::operator=(const Window& nouv){
+  height=nouv.height;
+  width=nouv.width;
+  startx=nouv.startx;
+  starty=nouv.starty;
+  bord=nouv.bord;
+  
+   colorwin=WCYAN;
+     colorframe=WBLACK;
+     frame=newwin(height+2,w+2,y,x);
+     win=subwin(frame,h,w,y+1,x+1);
+     wbkgd(frame,COLOR_PAIR(colorwin));
+     wbkgd(win,COLOR_PAIR(colorframe));
+  // wborder(frame, bord, bord, bord, bord, bord, bord, bord, bord);
+   wattron(win,COLOR_PAIR(colorwin));
+     wattron(frame,COLOR_PAIR(colorframe));
+  setCouleurBordure(nouv.getCouleurBordure());
+  setCouleurFenetre(nouv.getCouleurFenetre());
+  update();
+
+  }*/
 
 Window::~Window(){
   wborder(frame, ' ', ' ', ' ',' ',' ',' ',' ',' ');
@@ -91,17 +121,23 @@ void Window::print(size_t x, size_t y, char s) const{
   update();  
 }
 
-
 size_t Window::getX() const { return startx;} 
 size_t Window::getY() const { return starty;} 
 size_t Window::getHauteur() const { return height;} 
 size_t Window::getLargeur() const { return width;}  
 Color Window::getCouleurBordure() const{ return colorframe;}
 Color Window::getCouleurFenetre() const{ return colorwin;}
+
+void Window::setX(size_t x){startx = x;}
+void Window::setY(size_t y){starty = y;}
+void Window::setHauteur(size_t h){height = h;}
+void Window::setLargeur(size_t w){width = w;}
+
+
 void Window::setCouleurBordure(Color c){
   colorframe=c;
   wattron(frame,COLOR_PAIR(colorframe));
-  wborder(frame, bord,bord,bord,bord,bord,bord,bord,bord);
+  wborder(frame,bord,bord,bord,bord,bord,bord,bord,bord);
   update();
 }
 void Window::setCouleurFenetre(Color c){

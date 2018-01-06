@@ -74,7 +74,7 @@ Navire& Navire::operator=(const Navire* N) {
     }    
   }
   return *this;
-  }
+}
 
 bool Navire::operator==(const Navire& N) {
   if(this!=&N){

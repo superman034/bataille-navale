@@ -19,6 +19,17 @@ Grille::Grille(const Navire& N1, const Navire& N2, const Navire& N3, const Navir
   tabNavires[4] = N5;
 }
 
+Grille& Grille::operator=(const Grille& nouv){
+  if (this!=&nouv){
+    nbNaviresCoules=nouv.nbNaviresCoules;
+    tabCases=nouv.tabCases;
+    for (int i=0;i<5;i++){
+      tabNavires[i]=nouv.tabNavires[i];
+    }
+  }
+  return *this;
+}
+
 void Grille::ajouterCase(const Case& c) {
   tabCases.push_back(c);
 }
@@ -38,7 +49,7 @@ void Grille::ajouterNavire(const Navire& N, Window& W) {
 }
 
 void Grille::enleverNavire(size_t i, Window& W) {
-  if (i >= 0 && i < 5){
+  if (i < 5){
     tabNavires[i].supprimer_navire(W); // On supprime graphiquement le navire de la fenetre
     tabNavires[i] = Navire(); // On le remplace par un navire vide par défaut, avec un nombre de cases égal à 0
   }

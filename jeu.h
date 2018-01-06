@@ -1,30 +1,41 @@
 #ifndef JEU_H
 #define JEU_H
-#include "regles.h"
+#include <iostream>
+#include <fstream>
 #include "joueur.h"
+#include "window.h"
+#include "navire.h"
+#include "case.h"
 #include "grille.h"
 
 class Jeu{
     
  private:
-
-  Joueur *listeJoueurs;
-  Regles Reg;
-    
+  size_t nombreJoueurs,nombreJoueursHumains,largFenetre,hautFenetre;
+  Joueur* listeJoueurs;//nom,identifiant,ia,score,nombre bateaux coulés
+              
  public:
-    
-  Jeu(size_t nombreJoueurs, size_t nombreJoueursHumains);
+  Jeu();
   ~Jeu();
+      
+  void demarrer(); 
   
-  void creerRegles();//creation de regles avec  une boucle
-  //void demarrer();//initialise la partie
-  //void arreter();//libère la mémoire
+  Joueur& getJoueur(size_t numJoueur);
+  size_t getNbJoueurs();
+  size_t getNbJoueursHumains();
+  
+  void setNomsJoueurs();
+  void setNbJoueurs();
+  void setDimFenetre();
+    
+  void tirer(Window& fenetreDeTir, Grille grilleDeTir);
+  void lancerPartie(Window& joueur, Grille& Joueur, Window& ia, Grille& IA);
+  void placerNavire(Window* joueur, Grille* Joueur, Navire* aDeplacer);
+  //void selectionnerNavire(Window& flotte, Window* joueur, Grille& Flotte, Grille* Joueur);
+  void selectionnerNavire(size_t, Window&, Grille&);
+  void init();
    
-  Regles getRegles();
-  Joueur getJoueur(int idJoueur);
-
     
 };
-
 
 #endif
