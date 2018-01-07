@@ -1,7 +1,0 @@
-a a placé ses 5 navires à 6.64828 secondes
-b a placé ses 5 navires à 10.0647 secondes
-c a placé ses 5 navires à 13.7847 secondes
-Les navires de l'IA_1 ont été placés automatiquement à 16.2483 secondes
-Tous les placements ont été correctement effectués à 16.2484 secondes
-c a été tiré au sort pour commencer la partie à 16.2484 secondes
-c a décidé de changer de cible et se place sur la grille de a à 19.3207 secondes
