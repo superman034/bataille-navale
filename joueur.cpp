@@ -5,6 +5,7 @@ Joueur::Joueur(std::string nom, bool ia){
   this->score=0;
   this->nom=nom;
   this->ia=ia;
+  out = false;
 }
 
 Joueur::Joueur(){
@@ -12,6 +13,7 @@ Joueur::Joueur(){
   this->score=0;
   this->nom="";
   this->ia=false;
+  out = false;
 }
 
 Joueur::~Joueur(){
@@ -33,9 +35,7 @@ void Joueur::setNom(std::string nouvNom){
   this->nom=nouvNom;
 }
 
-void Joueur::setScore(size_t score){
-  this->score=score;
-}
+void Joueur::incrScore(){ score+=1; }
 
 void Joueur::setIA(){
   ia=true;}
@@ -48,10 +48,18 @@ void Joueur::setFenetre(Window& F){
   this->fenetre=F;
 }
 
+void Joueur::setOut(bool b){ out=b; }
+bool Joueur::getOut() const { return out; }
+
 Grille& Joueur::getGrille(){
-  return grille;
-}
+  return grille;}
 
 Window& Joueur::getFenetre(){
-  return fenetre;
+  return fenetre;}
+
+bool Joueur::verifOut(){
+  if (grille.getNbNaviresCoules() == 5){
+    out = true;
+    return true;
+  }
 }

@@ -13,7 +13,7 @@
 #define FICHIER_ID       4
 #define AUTEUR_ID        3
 
-#define VERSION 2.0
+#define VERSION 3.87
 
 int main(int argc, char** argv){
   TabOptions opts;
@@ -41,12 +41,16 @@ int main(int argc, char** argv){
       
       if( ( std::string(argv[i])==std::string("-v") )  || ( std::string(argv[i])==std::string("--version") ) )
       {
-	std::cout<<"La version du programme est " << VERSION <<std::endl;
+	std::cout<<"Bataille Navale, version: " << VERSION << " 2017-2018" << std::endl;
       }
       
       if( ( std::string(argv[i])==std::string("-a") )  || ( std::string(argv[i])==std::string("--auteur") ))
 	{
-	  std::cout<<"Les auteurs sont : Alex, Abdellah, Anas et Smaail."<<std::endl;
+	  std::cout<<"Les auteurs du jeu sont :" << std::endl;
+	  std::cout<<"- CHOUKRI Abdellah"<<std::endl;
+	  std::cout<<"- CHETOUAN Anas"<<std::endl;
+	  std::cout<<"- DURBESSON Alexandre"<<std::endl;
+	  std::cout<<"- HENNANI Smaail"<<std::endl;
 	}
 
       if( ( std::string(argv[i])==std::string("-h") ) || ( std::string(argv[i])==std::string("--help") ))
@@ -64,7 +68,7 @@ int main(int argc, char** argv){
 	  if( (std::string(argv[i])!="-a") || (std::string(argv[i])!="-v") || (std::string(argv[i])!="-h")){
 	    nomfichier=argv[i]; // Le nom du fichier est récuperé ici
 	    Jeu BatailleNavale;
-	    BatailleNavale.demarrer(nomfichier);
+	    BatailleNavale.demarrer(nomfichier); // Lance le jeu avec le nom du fichier de config des navires personnalisés
 	  }
 	
       }
@@ -75,11 +79,11 @@ int main(int argc, char** argv){
   }
   if (opt_error) {
     std::cout << "Usage : " << argv[0] << " [Options]" << std::endl;
-    std::cout << "--help pour l'aide !"<<std::endl;
+    std::cout << "Utilisez l'option --help pour l'aide."<<std::endl;
     std::terminate();
   }
 
-  if(argc==1){
+  if(argc==1){ // Lance le jeu sans navires perso
     Jeu BatailleNavale;
     BatailleNavale.demarrer("rien");
   }

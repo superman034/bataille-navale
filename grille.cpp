@@ -185,6 +185,7 @@ void Grille::tirCase(Window& W){ // Algorithme de tir à améliorer
 	Case* C1 = N1->findCase(i,j);
 	if (C1->getTouchee() == false){
 	  C1->setTouchee(true);
+	  ajouterCase(Case(i,j,false,true,true));
 	  valide = true;
 	}
       }
@@ -194,6 +195,7 @@ void Grille::tirCase(Window& W){ // Algorithme de tir à améliorer
       }
     }
   } while(valide != true);
+  afficher_tabCases(W);
 }
 
 size_t Grille::getNbNaviresCoules() {

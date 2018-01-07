@@ -22,15 +22,16 @@ class Jeu{
       
   void demarrer(std::string); 
   
-  Joueur& getJoueur(size_t numJoueur);
+  Joueur& getJoueur(size_t);
   size_t getNbJoueurs();
   size_t getNbJoueursHumains();
+  size_t getNbOut();
   
   void setNomsJoueurs();
   void setNbJoueurs();
   void setDimFenetre();
     
-  void tirer(size_t);
+  void tirer(size_t*, size_t);
   void lancerPartie();
   void placerNavire(Window*, Grille*, Navire*);
   void selectionnerNavire(size_t, Window&, Grille&);

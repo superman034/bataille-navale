@@ -16,6 +16,7 @@ Jeu::Jeu(){
 	this->nombreJoueurs=0;
 	this->nombreJoueursHumains=0;
 	temps = clock();
+	remove("logs.txt"); // Remise à zéro du fichier de logs lorsqu'on lance une nouvelle partie
 }
 
 Jeu::~Jeu(){
@@ -129,7 +130,7 @@ void Jeu::setNomsJoueurs(){
       listeJoueurs[1].setIA();
       listeJoueurs[2].setNom("IA_2");
       listeJoueurs[2].setIA();
-      listeJoueurs[3].setNom("IA_4");
+      listeJoueurs[3].setNom("IA_3");
       listeJoueurs[3].setIA();
     }
     else if(nombreJoueursHumains==2){
@@ -239,18 +240,28 @@ return nombreJoueurs;}
 size_t Jeu::getNbJoueursHumains(){
 return nombreJoueursHumains;}
 
+size_t Jeu::getNbOut(){
+  size_t nbOut = 0;
+  for(size_t i=0;i<nombreJoueurs;i++){
+    if(listeJoueurs[i].getOut() == true)
+      nbOut++;
+  }
+  return nbOut;
+}
+
 //bn-main
 
 
-void Jeu::tirer(size_t numCible){ // Pas fini
+void Jeu::tirer(size_t* numCible, size_t numTireur){ // Pas fini
   size_t ch;
   size_t x=0, y=0;
   bool tir = false;
+  bool changeCible = false;
   char p='X';
   Color col=WBLACK;
 
-  Grille* grilleDeTir = &(listeJoueurs[numCible].getGrille());
-  Window* fenetreDeTir = &(listeJoueurs[numCible].getFenetre());
+  Grille* grilleDeTir = &(listeJoueurs[*numCible].getGrille());
+  Window* fenetreDeTir = &(listeJoueurs[*numCible].getFenetre());
   
   if (grilleDeTir->appartientATabCases(x, y) == true){ // Code pour afficher le viseur pour tirer à la prochaine case vide
     while (grilleDeTir->appartientATabCases(x, y) != false){
@@ -266,7 +277,7 @@ void Jeu::tirer(size_t numCible){ // Pas fini
   fenetreDeTir->print(x,y,p,col);
   grilleDeTir->afficher_grille(*fenetreDeTir);
   
-  while(!tir)
+  while(!tir && !changeCible)
     {     
       switch (ch = getch()) {
       case KEY_UP:
@@ -383,6 +394,7 @@ void Jeu::tirer(size_t numCible){ // Pas fini
 	    Case* C = N->findCase(x,y);
 	    if(C->getTouchee() == false){
 	      C->setTouchee(true);
+	      listeJoueurs[numTireur].incrScore(); // On ajoute 1 à son score puisqu'il vient de toucher une case
 	      grilleDeTir->ajouterCase(Case(x,y,false,true,true));
 	      grilleDeTir->afficher_tabCases(*fenetreDeTir);
 	    }
@@ -393,56 +405,133 @@ void Jeu::tirer(size_t numCible){ // Pas fini
 	  grilleDeTir->ajouterCase(Case(x, y));
 	  grilleDeTir->afficher_tabCases(*fenetreDeTir);
 	}
-	
 	tir = true;
 	break;
+
+      case 10: // Valeur ASCII pour désigner la touche entrée
+	// On veut accéder au numéro de la cible suivante
+	bool valide = false;
+	while(!valide){
+	  if(*numCible+1 >= nombreJoueurs)
+	    *numCible=0;
+	  else
+	    *numCible++;	    
+	  if(listeJoueurs[*numCible].verifOut() == false && *numCible != numTireur)
+	    valide = true;
+	}
+	
+	fenetreDeTir->print(x,y,' ', col);
+	std::string nomTireur = listeJoueurs[numTireur].getNom();
+	std::string log = " a décidé de changer de cible et se place sur la grille de ";
+	std::string nomCible = listeJoueurs[*numCible].getNom();
+	ajouterAction(nomTireur + log + nomCible, temps);
+	tirer(numCible, numTireur);
+	changeCible = true;
+	break;
+	
       }
+
     }
+
 }
 
 void Jeu::lancerPartie(){
-  /* size_t first = rand() % 2;
-  bool fin = false;
-  while (!fin){
-    if (first == 0){ // Le joueur commence, il tire
-      tirer(ia, IA);
-      if (IA.getNbNaviresCoules() == 5)
-	fin = true;
-      else{
-	Joueur.tirCase(joueur);
-	Joueur.afficher_grille(joueur);
-	if (Joueur.getNbNaviresCoules() == 5)
-	  fin = true;
-      }
-    }
+  size_t first = rand() % nombreJoueurs;
+  
+  std::string log = " a été tiré au sort pour commencer la partie";
+  std::string nomFirst= listeJoueurs[first].getNom();
+  ajouterAction(nomFirst + log, temps);
+  size_t c = 0;
+  size_t* cible = &c;
     
-    if (first == 1){ // L'IA commence
-      Joueur.tirCase(joueur);
-      if (Joueur.getNbNaviresCoules() == 5)
-	fin = true;
-      else{
-	Joueur.afficher_grille(joueur);
-	tirer(ia, IA);
-	if (IA.getNbNaviresCoules() == 5)
-	  fin = true;
-      }
-    }
-
+  if(listeJoueurs[first].getIA() == true){
+    *cible = rand() % nombreJoueurs;
+    if(*cible == first || listeJoueurs[*cible].getOut() == true) // Si on tombe sur une cible non valide, on retire au sort jusqu'à en trouver une
+      while(*cible == first && listeJoueurs[*cible].getOut() == true)
+	*cible = rand() % nombreJoueurs;
+    log = " a tiré automatiquement sur ";
+    std::string nomCible = listeJoueurs[*cible].getNom();
+    ajouterAction(nomFirst + log + nomCible, temps);
+    listeJoueurs[*cible].getGrille().tirCase(listeJoueurs[*cible].getFenetre());
+    //listeJoueurs[cible].verifOut();
   }
-  */
-  /*
-  size_t first = rand() % nombreJoueurs-1; // Le joueur ou l'IA qui commence en premier
-  bool fin=false;
-  while(true){
-    if(listeJoueurs[first].getIA() == true){
-      do{
-	size_t cible = rand() % nombreJoueurs-1;
-      }while(cible == first);
+    
+  else if(listeJoueurs[first].getIA() == false){
+    *cible = first + 1;
+    bool valide = false;
+    do{
+      if(*cible >= nombreJoueurs)
+	*cible = 0;
+      if(listeJoueurs[*cible].getOut() != true)
+	valide = true;
+      else
+	*cible++;
+    }while(!valide);
+    
+    tirer(cible, first);
+    log = " a choisi de tirer sur ";
+    std::string nomCible = listeJoueurs[*cible].getNom();
+    ajouterAction(nomFirst + log + nomCible, temps);
+  }
+
+  size_t aQuiLeTour = first+1;
+    
+  bool fin = false;
+  while(!fin){
+    bool valide = false;
+    do{
+      if(aQuiLeTour >= nombreJoueurs)
+	aQuiLeTour = 0;
+      if(listeJoueurs[aQuiLeTour].getOut() != true)
+	valide = true;
+      else
+	aQuiLeTour++;
+    }while(!valide);
+
+    std::string log = "C'est maintenant au tour de ";
+    std::string nomTour = listeJoueurs[aQuiLeTour].getNom();
+    ajouterAction(log + nomTour, temps);
+
+    if(listeJoueurs[aQuiLeTour].getIA() == true){
+      *cible = rand() % nombreJoueurs;
+      if(*cible == aQuiLeTour || listeJoueurs[*cible].getOut() == true) // Si on tombe sur une cible non valide, on retire au sort jusqu'à en trouver une
+	while(*cible == aQuiLeTour && listeJoueurs[*cible].getOut() == true)
+	  *cible = rand() % nombreJoueurs;
       
-      tirer(cible);
+      listeJoueurs[*cible].getGrille().tirCase(listeJoueurs[*cible].getFenetre());
+      
+      std::string log = " a tiré automatiquement sur ";
+      std::string nomCible = listeJoueurs[*cible].getNom();
+      ajouterAction(nomTour + log + nomCible, temps);
+      //listeJoueurs[cible].verifOut();
     }
     
-  */
+    else if(listeJoueurs[first].getIA() == false){
+      *cible = aQuiLeTour + 1;
+      valide = false;
+      do{
+	if(*cible >= nombreJoueurs)
+	  *cible = 0;
+	if(listeJoueurs[*cible].getOut() != true)
+	  valide = true;
+	else
+	  *cible++;
+      }while(!valide);
+      
+      tirer(cible, aQuiLeTour);
+      std::string log = " a choisi de tirer sur ";
+      std::string nomCible = listeJoueurs[*cible].getNom();
+      ajouterAction(nomTour + log + nomCible, temps);
+    }
+    
+    if(getNbOut() == nombreJoueurs-1){
+      ajouterAction("La partie est terminé", temps);
+      fin = true;
+    }
+    else
+      aQuiLeTour++;
+  }
+   
   // Mettre message de fin ici
 
 }
@@ -632,13 +721,11 @@ void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
 	  // Une position valide est une position où la superficie entière du navire ne doit pas dépasser la fenêtre et où aucune case navire ne touche la case d'un autre navire
 
 	  bool chevauchement = false; 
-	  for(size_t i=0; i<aDeplacer.getNbCases(); i++){
-	    for(size_t i=0; i<aDeplacer.getNbCases(); i++){ // On parcourt chaque case du navire qu'on veut placer
-	      Navire p;
-	      if(Joueur->aQuelNavireAppartientCase(x,y)!= NULL) p = Joueur->aQuelNavireAppartientCase(x,y);
-	      if(Joueur->appartientAUnNavire(aDeplacer.at(i).getX(), aDeplacer.at(i).getY()) == true && p != aDeplacer) // Si à la position d'une case du navire est occupée dans l'autre grille
-		chevauchement = true;
-	    }
+	  for(size_t i=0; i<aDeplacer.getNbCases(); i++){ // On parcourt chaque case du navire qu'on veut placer
+	    Navire p;
+	    if(Joueur->aQuelNavireAppartientCase(x,y)!= NULL) p = Joueur->aQuelNavireAppartientCase(x,y);
+	    if(Joueur->appartientAUnNavire(aDeplacer.at(i).getX(), aDeplacer.at(i).getY()) == true && p != aDeplacer) // Si à la position d'une case du navire est occupée dans l'autre grille
+	      chevauchement = true;
 	  }
 
 	  if (chevauchement == true){
@@ -647,7 +734,7 @@ void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
 	      if(Joueur->aQuelNavireAppartientCase(x,y)!= NULL) p = Joueur->aQuelNavireAppartientCase(x,y);
 	      while(Joueur->appartientAUnNavire(aDeplacer.at(i).getX(), aDeplacer.at(i).getY()) != false && p != aDeplacer){ // On répète l'action tant qu'on n'a pas une position valide
 		aDeplacer.deplacerNavireDroite();
-		if (aDeplacer.X_max_case_navire() >= joueur->getLargeur()){ // Si après avoir déplacé le navire vers la droite et que la case la plus à droite du navire sort de la fenere
+		if (aDeplacer.X_max_case_navire() >= joueur->getLargeur()){ // Si après avoir déplacé le navire vers la droite et que la case la plus à droite du navire sort de la fenetre
 		  aDeplacer.deplacerNavire(0,aDeplacer.at(0).getY()+1); // On remet alors le navire à la position x=0, en augmantant y de 1, comme un retour chariot
 		}
 	      }
@@ -677,11 +764,11 @@ void Jeu::selectionnerNavire(size_t numJoueur, Window& flotte, Grille& Flotte){
 void Jeu::init(std::string nomfichier){
   // Suivant le mode, si l'utilisateur a choisi les modes personnalisé ou non on appelle la fonction suivante :
   
-  Navire porteAvions(5, 2, 2, BBLUE);
-  Navire croiseur(4, 4, 2, BGREEN);
-  Navire contreTorpilleur(3, 6, 2, BYELLOW);
-  Navire sousMarin(3, 8, 2, BMAGENTA);
-  Navire torpilleur(2, 10, 2, BRED);
+  Navire porteAvions(5, 4, 1, BBLUE);
+  Navire croiseur(4, 6, 1, BGREEN);
+  Navire contreTorpilleur(3, 8, 1, BYELLOW);
+  Navire sousMarin(3, 10, 1, BMAGENTA);
+  Navire torpilleur(2, 12, 1, BRED);
   
   Navire* tabNav = NULL;
   bool perso = false;
@@ -720,29 +807,32 @@ void Jeu::init(std::string nomfichier){
   Window B(hautFenetre, largFenetre, x, 6);
   B.setCouleurBordure(BBLUE);
   listeJoueurs[1].setFenetre(B);
-  x+=largFenetre+3;
   
-  Window C(hautFenetre, largFenetre, x, 6);
   if(nombreJoueurs>=3){
-    C.setCouleurBordure(BBLUE);
-    listeJoueurs[2].setFenetre(C);
     x+=largFenetre+3;
   }
-  /*else{
-    C.clear();
-    C.~Window();
-    }*/
+  
+  Window C(hautFenetre, largFenetre, x, 6);
+  C.setCouleurBordure(BBLUE);
 
-  Window D(hautFenetre, largFenetre, x, 6);
+  if(nombreJoueurs>=3){
+    listeJoueurs[2].setFenetre(C);
+  }
+    
+
   if(nombreJoueurs==4){
-    D.setCouleurBordure(BBLUE);
-    listeJoueurs[3].setFenetre(D);
+    x+=largFenetre+3;
   }
   
-  /* else{
-     D.clear();
-     D.~Window();
-     }*/
+  Window D(hautFenetre, largFenetre, x, 6); // Bug lorsqu'on initialise une fenêtre dans une condition
+  //Donc on est obligé d'utiliser cette astuce qui calque plusieurs fenêtre à la même position et qui les décale s'il y'a besoin (par rapport au nb de joueurs)
+  D.setCouleurBordure(BBLUE);
+
+  if(nombreJoueurs==4){
+    listeJoueurs[3].setFenetre(D);
+  }
+
+  
   
   Window flotte(7,21,6,32);
   flotte.setCouleurBordure(BBLUE);
@@ -778,6 +868,8 @@ void Jeu::init(std::string nomfichier){
       ajouterAction(log + nom + log2, temps);
     }
   }
+
+  ajouterAction("Tous les placements ont été correctement effectués", temps);
          
   lancerPartie();
   

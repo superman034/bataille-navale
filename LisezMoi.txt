@@ -1,0 +1,7 @@
+Instructions :
+- Lancer un terminal et faire la commande make
+- Lancer le programme comme ceci : ./BatailleNavale pour jouer avec les navires par défaut ou bien ./BatailleNavale -n <nomdufichierdeconfig> pour les navires personnalisés,
+par défaut le nom de fichier de configuration est "navire.cfg", il peut être renommé et passé en option.
+- ./BatailleNavale -h ou --help pour + d'infos sur les options
+
+Le contenu du fichier de configuration des navires personnalisés "navire.cfg" peut-être modifié pour jouer avec les navires souhaités

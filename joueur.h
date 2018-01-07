@@ -8,8 +8,9 @@
 class Joueur{
  private:
   std::string nom;//
-  size_t score; //nbr de bateau perdus, et score = nombre de parties gagnées par le joueur
+  size_t score; // nb de cases que le joueur a touché
   bool ia;//pour savoir si le joueur est une IA ou pas
+  bool out; // pour savoir s'il est en état de continuer la partie ou non
   Grille grille;
   Window fenetre;
 
@@ -26,15 +27,21 @@ class Joueur{
   
   Grille& getGrille();
   Window& getFenetre();
+
+  bool getOut() const;
     
   //accesseur en écriture
     
   void setNom(std::string nouvNom);
-  void setScore(size_t);
+  void incrScore();
   void setIA();
   
   void setGrille(Grille&);
   void setFenetre(Window&);
+
+  void setOut(bool);
+
+  bool verifOut();
     
 };
 
