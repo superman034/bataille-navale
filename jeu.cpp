@@ -509,9 +509,9 @@ void Jeu::lancerPartie(){
       std::string log = " a tiré automatiquement sur ";
       std::string nomCible = listeJoueurs[*cible].getNom();
       ajouterAction(nomTour + log + nomCible, temps);
-      if(listeJoueurs[cible].verifOut() == true){
+      if(listeJoueurs[*cible].verifOut() == true){
 	log = " a achevé ";
-	ajouterAction(nomTour + log + nomCible);
+	ajouterAction(nomTour + log + nomCible, temps);
       }
 	
     }
@@ -532,9 +532,9 @@ void Jeu::lancerPartie(){
       std::string log = " a choisi de tirer sur ";
       std::string nomCible = listeJoueurs[*cible].getNom();
       ajouterAction(nomTour + log + nomCible, temps);
-      if(listeJoueurs[cible].verifOut() == true){
+      if(listeJoueurs[*cible].verifOut() == true){
 	log = " a achevé ";
-	ajouterAction(nomTour + log + nomCible);
+	ajouterAction(nomTour + log + nomCible, temps);
       }
     }
     
