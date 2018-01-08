@@ -1,0 +1,15 @@
+Début de la partie en mode non perso à 0.012667 secondes
+Anas a placé ses 5 navires à 5.48645 secondes
+Les navires de l'IA_1 ont été placés automatiquement à 6.89456 secondes
+Tous les placements ont été correctement effectués à 6.89643 secondes
+IA_1 a été tiré au sort pour commencer la partie à 6.89712 secondes
+IA_1 a tiré automatiquement sur Anas à 6.89726 secondes
+C'est maintenant au tour de Anas à 6.89787 secondes
+Anas a choisi de tirer sur IA_1 à 10.1471 secondes
+C'est maintenant au tour de IA_1 à 10.1474 secondes
+IA_1 a tiré automatiquement sur Anas à 10.1478 secondes
+C'est maintenant au tour de Anas à 10.1481 secondes
+Anas a choisi de tirer sur IA_1 à 12.2745 secondes
+C'est maintenant au tour de IA_1 à 12.275 secondes
+IA_1 a tiré automatiquement sur Anas à 12.2755 secondes
+C'est maintenant au tour de Anas à 12.2758 secondes

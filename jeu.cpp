@@ -9,6 +9,7 @@
 #include "chargerNavirePerso.h"
 #include "logs.h"
 #include "score.h"
+#include "message.h"
 
 #define SN '-'// SN = Le symbole affiché à chaque case d'un navire
 #define HAUT_LARG_GRILLE_MIN 20
@@ -438,9 +439,16 @@ void Jeu::tirer(size_t* numCible, size_t numTireur){ // Pas fini
 
 void Jeu::lancerPartie(){
   size_t first = rand() % nombreJoueurs;
+
+  Window message(8,80,40,32);
+  message.setCouleurBordure(BRED);
+
   
   std::string log = " a été tiré au sort pour commencer la partie";
   std::string nomFirst= listeJoueurs[first].getNom();
+  
+  message.print(2,1, nomFirst+log, WRED);
+  
   ajouterAction(nomFirst + log, temps);
   size_t c = 0;
   size_t* cible = &c;
@@ -471,6 +479,11 @@ void Jeu::lancerPartie(){
 	*cible+=1;
     }
     
+    message.clear();
+    std::string instruction = "C'est ";
+    std::string instruction2 = " qui joue. Déplacez vous dans la grille avec les flèches directionnelles, entrée pour changer de cible ou espace pour tirer.";
+  
+    message.print(2,1, instruction+nomFirst+instruction2, WRED);
     tirer(cible, first);
     log = " a choisi de tirer sur ";
     std::string nomCible = listeJoueurs[*cible].getNom();
@@ -480,6 +493,7 @@ void Jeu::lancerPartie(){
   bool fin = false;
 
   size_t aQuiLeTour = first+1;
+  message.clear();
   
   while(!fin){
     bool valide = false;
@@ -494,6 +508,8 @@ void Jeu::lancerPartie(){
 
     std::string log = "C'est maintenant au tour de ";
     std::string nomTour = listeJoueurs[aQuiLeTour].getNom();
+  
+    message.print(2,1, log+nomTour, WRED);
     ajouterAction(log + nomTour, temps);
 
     if(listeJoueurs[aQuiLeTour].getIA() == true){
@@ -528,6 +544,11 @@ void Jeu::lancerPartie(){
 	  *cible+=1;
       }
       
+      message.clear();
+      std::string instruction = "C'est ";
+      std::string instruction2 = " qui joue. Déplacez vous dans la grille avec les flèches directionnelles, entrée pour changer de cible ou espace pour tirer.";
+      message.print(2,1, instruction+nomTour+instruction2, WRED);
+      
       tirer(cible, aQuiLeTour);
       std::string log = " a choisi de tirer sur ";
       std::string nomCible = listeJoueurs[*cible].getNom();
@@ -543,11 +564,19 @@ void Jeu::lancerPartie(){
     }
     else
       aQuiLeTour++;
+    message.clear();
   }
 
   // Le vainqueur est le dernier à qui il lui a été assigné la variable "aQuiLeTour"
 
   std::string nom = listeJoueurs[aQuiLeTour].getNom();
+  std::string msg = " gagne la partie ! Appuyez sur entrée pour quitter. Vous pouvez  vérifier le nouveau tableau de score dans score.txt et les logs du jeu ! (logs.txt)";
+  message.print(2,1, nom+msg, WRED);
+  bool quitte = false;
+  while(!quitte){
+    if(size_t c=getch() == 10)
+      quitte = true;
+  }
   log = " a gagné la partie ! ";
   ajouterAction(nom+log, temps);
   ajouterScore(listeJoueurs[aQuiLeTour].getScore(),nom);
@@ -815,7 +844,7 @@ void Jeu::init(std::string nomfichier){
       tabNav[4] = torpilleur;
     }
   
-  Window titre(3,30,12,0);
+  Window titre(3,30,15,0);
   titre.setCouleurBordure(BRED);
   
   size_t x = 5+largFenetre;
@@ -862,38 +891,37 @@ void Jeu::init(std::string nomfichier){
   Window flotte(7,21,6,32);
   flotte.setCouleurBordure(BBLUE);
   
-  titre.print(8,1,"Bataille navale", WRED);
+  titre.print(6,1,"Bataille navale", WRED);
+
+  Window message(8,80,40,32);
+  message.setCouleurBordure(BRED);
 
   // Grille IA(porteAvions, croiseur, contreTorpilleur, sousMarin, torpilleur);
 
-
   for(size_t i=0; i<nombreJoueurs; i++){
+    std::string nom = listeJoueurs[i].getNom();
+    
     if (listeJoueurs[i].getIA() == false){
       Grille Flotte(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
       Flotte.afficher_grille(flotte);
+      std::string msg = "C'est à ";
+      std::string finmsg = " de placer ses navires. Déplacez vous avec les flèches directionnelles et apuyez sur entrée pour séléctionner un navire. Une fois votre navire transferé, appuyez à nouveau sur entrée pour valider sa nouvelle position après l'avoir déplacé.";
+      message.print(2,1, msg+nom+finmsg, WRED);
       selectionnerNavire(i, flotte, Flotte); // Fonction pour que le joueur se déplace dans une grille donnée, ici la flotte et pour qu'il y séléctionne un navire
-      std::string nom = listeJoueurs[i].getNom();
       std::string log = " a placé ses 5 navires";
       ajouterAction(nom + log, temps);
     }
     else{
-      if (perso == true){
-	Grille IA(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
-	IA.placer_hasard_navire_perso(listeJoueurs[i].getFenetre());
-	listeJoueurs[i].setGrille(IA);
-      }
-      else{
-	// vide si non perso et si ia
-	if(perso == false){
-	  listeJoueurs[i].getGrille().placer_hasard_navire_non_perso(listeJoueurs[i].getFenetre());
-	}
-      }
+      Grille IA(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
+      message.print(2,1, "Placement automatique en cours...",WRED);
+      IA.placer_hasard_navire(listeJoueurs[i].getFenetre());
+      listeJoueurs[i].setGrille(IA);
       std::string log = "Les navires de l'";
-      std::string nom = listeJoueurs[i].getNom();
       std::string log2 = " ont été placés automatiquement";
       ajouterAction(log + nom + log2, temps);
     }
-    listeJoueurs[i].getGrille().supprimer_grille(listeJoueurs[i].getFenetre());
+    listeJoueurs[i].getGrille().supprimer_grille(listeJoueurs[i].getFenetre()); // On cache la grille après que le joueur l'ait placée
+    message.clear();
   }
 
   ajouterAction("Tous les placements ont été correctement effectués", temps);

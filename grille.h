@@ -55,8 +55,8 @@ public:
   void ajoute_a_tab(size_t tab[], size_t k , size_t position);
   //--------------------------------------//
 
-  void placer_hasard_navire_non_perso(Window&);
-  void placer_hasard_navire_perso(Window&);
+  // void placer_hasard_navire_non_perso(Window&);
+  void placer_hasard_navire(Window&);
     
 };
 

@@ -256,7 +256,7 @@ void Grille::ajoute_a_tab(size_t tab[], size_t k, size_t position){
 //--------------------------------------//
 
 
-void Grille::placer_hasard_navire_non_perso(Window& W){
+/*void Grille::placer_hasard_navire_non_perso(Window& W){
   Navire n;
   Navire N1;
   size_t tab[1000]={0};
@@ -291,11 +291,11 @@ void Grille::placer_hasard_navire_non_perso(Window& W){
 
     }
 
-}
+}*/
 
 // Pour placement aléatoire nous avons opté pour un placement des navires au centre puis de les deplacer de manière aléatoire
 
-void Grille::placer_hasard_navire_perso(Window& W){
+void Grille::placer_hasard_navire(Window& W){
   Navire* N; //pointeur vers un tab de navires
   size_t i, j; // coordonnées de la case tirée au hasard
   size_t k=0;  // size_t qui correspond au numéro du navire à placer
