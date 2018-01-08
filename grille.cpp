@@ -235,6 +235,12 @@ void Grille::afficher_grille(Window& W) {
   afficher_tabCases(W);
 }
 
+// permet de cacher la grille après avoire placé ses navires
+void Grille::supprimer_grille(Window& W) {
+  for(int i=0;i<5;i++)
+    tabNavires[i].supprimer_navire(W);
+}
+
 
 //-------------------------------------//
 bool Grille::appartient_tab(size_t tab[], size_t k ){
@@ -245,7 +251,6 @@ bool Grille::appartient_tab(size_t tab[], size_t k ){
 }
 
 void Grille::ajoute_a_tab(size_t tab[], size_t k, size_t position){
-
   tab[position]=k;
 }
 //--------------------------------------//
@@ -264,7 +269,7 @@ void Grille::placer_hasard_navire_non_perso(Window& W){
 
   std::srand(std::time(NULL));
 
-  while(k<5 )
+  while(k<5)
     {
 
       do{
@@ -279,10 +284,8 @@ void Grille::placer_hasard_navire_non_perso(Window& W){
 	  compteur++;
 	  Navire nav( n.getNbCases(), i,j, n.getCouleur() );
 	  n=nav;
-	  n.afficher_navire(W, n.getCouleur(),'_');
-
+	  ajouterNavire(nav, W);
         }
-
 
       } while(k<5 );
 

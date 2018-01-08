@@ -42,6 +42,7 @@ public:
   void afficher_tabNavires(Window&);
   void afficher_tabCases(Window&);
   void afficher_grille(Window&);
+  void supprimer_grille(Window&);
 
   Navire& getNavire( size_t );
   Navire* getNavire2(size_t );

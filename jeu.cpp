@@ -8,6 +8,7 @@
 #include "grille.h"
 #include "chargerNavirePerso.h"
 #include "logs.h"
+#include "score.h"
 
 #define SN '-'// SN = Le symbole affiché à chaque case d'un navire
 #define HAUT_LARG_GRILLE_MIN 20
@@ -243,7 +244,7 @@ return nombreJoueursHumains;}
 size_t Jeu::getNbOut(){
   size_t nbOut = 0;
   for(size_t i=0;i<nombreJoueurs;i++){
-    if(listeJoueurs[i].getOut() == true)
+    if(listeJoueurs[i].verifOut() == true)
       nbOut++;
   }
   return nbOut;
@@ -275,7 +276,7 @@ void Jeu::tirer(size_t* numCible, size_t numTireur){ // Pas fini
   }
   
   fenetreDeTir->print(x,y,p,col);
-  grilleDeTir->afficher_grille(*fenetreDeTir);
+  //grilleDeTir->afficher_grille(*fenetreDeTir);
   
   while(!tir && !changeCible)
     {     
@@ -415,7 +416,7 @@ void Jeu::tirer(size_t* numCible, size_t numTireur){ // Pas fini
 	  if(*numCible+1 >= nombreJoueurs)
 	    *numCible=0;
 	  else
-	    *numCible++;	    
+	    *numCible+=1;
 	  if(listeJoueurs[*numCible].verifOut() == false && *numCible != numTireur)
 	    valide = true;
 	}
@@ -445,94 +446,113 @@ void Jeu::lancerPartie(){
   size_t* cible = &c;
     
   if(listeJoueurs[first].getIA() == true){
-    *cible = rand() % nombreJoueurs;
-    if(*cible == first || listeJoueurs[*cible].getOut() == true) // Si on tombe sur une cible non valide, on retire au sort jusqu'à en trouver une
-      while(*cible == first && listeJoueurs[*cible].getOut() == true)
-	*cible = rand() % nombreJoueurs;
+    bool tirValide = false;
+    while(!tirValide){
+      *cible = rand() % nombreJoueurs;
+      if(*cible != first && listeJoueurs[*cible].getOut() == false)
+	tirValide = true;
+    }
+    
     log = " a tiré automatiquement sur ";
     std::string nomCible = listeJoueurs[*cible].getNom();
     ajouterAction(nomFirst + log + nomCible, temps);
     listeJoueurs[*cible].getGrille().tirCase(listeJoueurs[*cible].getFenetre());
-    //listeJoueurs[cible].verifOut();
   }
     
   else if(listeJoueurs[first].getIA() == false){
     *cible = first + 1;
     bool valide = false;
-    do{
+    while(!valide){
       if(*cible >= nombreJoueurs)
-	*cible = 0;
-      if(listeJoueurs[*cible].getOut() != true)
+	*cible=0;
+      if(listeJoueurs[*cible].verifOut() == false && *cible != first)
 	valide = true;
       else
-	*cible++;
-    }while(!valide);
+	*cible+=1;
+    }
     
     tirer(cible, first);
     log = " a choisi de tirer sur ";
     std::string nomCible = listeJoueurs[*cible].getNom();
     ajouterAction(nomFirst + log + nomCible, temps);
   }
-
-  size_t aQuiLeTour = first+1;
     
   bool fin = false;
+
+  size_t aQuiLeTour = first+1;
+  
   while(!fin){
     bool valide = false;
-    do{
+    while(!valide){
       if(aQuiLeTour >= nombreJoueurs)
-	aQuiLeTour = 0;
-      if(listeJoueurs[aQuiLeTour].getOut() != true)
+	aQuiLeTour=0;
+      if(listeJoueurs[aQuiLeTour].verifOut() == false)
 	valide = true;
       else
-	aQuiLeTour++;
-    }while(!valide);
+	aQuiLeTour+=1;
+    }
 
     std::string log = "C'est maintenant au tour de ";
     std::string nomTour = listeJoueurs[aQuiLeTour].getNom();
     ajouterAction(log + nomTour, temps);
 
     if(listeJoueurs[aQuiLeTour].getIA() == true){
-      *cible = rand() % nombreJoueurs;
-      if(*cible == aQuiLeTour || listeJoueurs[*cible].getOut() == true) // Si on tombe sur une cible non valide, on retire au sort jusqu'à en trouver une
-	while(*cible == aQuiLeTour && listeJoueurs[*cible].getOut() == true)
-	  *cible = rand() % nombreJoueurs;
+      bool tirValide = false;
+      while(!tirValide){
+	*cible = rand() % nombreJoueurs;
+	if(*cible != aQuiLeTour && listeJoueurs[*cible].getOut() == false)
+	  tirValide = true;
+      }
       
       listeJoueurs[*cible].getGrille().tirCase(listeJoueurs[*cible].getFenetre());
       
       std::string log = " a tiré automatiquement sur ";
       std::string nomCible = listeJoueurs[*cible].getNom();
       ajouterAction(nomTour + log + nomCible, temps);
-      //listeJoueurs[cible].verifOut();
+      if(listeJoueurs[cible].verifOut() == true){
+	log = " a achevé ";
+	ajouterAction(nomTour + log + nomCible);
+      }
+	
     }
     
-    else if(listeJoueurs[first].getIA() == false){
+    else if(listeJoueurs[aQuiLeTour].getIA() == false){
       *cible = aQuiLeTour + 1;
-      valide = false;
-      do{
+      valide = false;      
+      while(!valide){
 	if(*cible >= nombreJoueurs)
-	  *cible = 0;
-	if(listeJoueurs[*cible].getOut() != true)
+	  *cible=0;
+	if(listeJoueurs[*cible].verifOut() == false && *cible != aQuiLeTour)
 	  valide = true;
 	else
-	  *cible++;
-      }while(!valide);
+	  *cible+=1;
+      }
       
       tirer(cible, aQuiLeTour);
       std::string log = " a choisi de tirer sur ";
       std::string nomCible = listeJoueurs[*cible].getNom();
       ajouterAction(nomTour + log + nomCible, temps);
+      if(listeJoueurs[cible].verifOut() == true){
+	log = " a achevé ";
+	ajouterAction(nomTour + log + nomCible);
+      }
     }
     
     if(getNbOut() == nombreJoueurs-1){
-      ajouterAction("La partie est terminé", temps);
       fin = true;
     }
     else
       aQuiLeTour++;
   }
-   
-  // Mettre message de fin ici
+
+  // Le vainqueur est le dernier à qui il lui a été assigné la variable "aQuiLeTour"
+
+  std::string nom = listeJoueurs[aQuiLeTour].getNom();
+  log = " a gagné la partie ! ";
+  ajouterAction(nom+log, temps);
+  ajouterScore(listeJoueurs[aQuiLeTour].getScore(),nom);
+
+  // Message de fin
 
 }
 
@@ -831,8 +851,13 @@ void Jeu::init(std::string nomfichier){
   if(nombreJoueurs==4){
     listeJoueurs[3].setFenetre(D);
   }
-
   
+  std::string log;
+  if(perso == true)
+    log = "Début de la partie en mode perso";
+  else
+    log = "Début de la partie en mode non perso";
+  ajouterAction(log, temps);
   
   Window flotte(7,21,6,32);
   flotte.setCouleurBordure(BBLUE);
@@ -858,15 +883,17 @@ void Jeu::init(std::string nomfichier){
 	listeJoueurs[i].setGrille(IA);
       }
       else{
-	Grille IA(tabNav[0], tabNav[1], tabNav[2], tabNav[3], tabNav[4]);
-	IA.placer_hasard_navire_non_perso(listeJoueurs[i].getFenetre());
-	listeJoueurs[i].setGrille(IA);
+	// vide si non perso et si ia
+	if(perso == false){
+	  listeJoueurs[i].getGrille().placer_hasard_navire_non_perso(listeJoueurs[i].getFenetre());
+	}
       }
       std::string log = "Les navires de l'";
       std::string nom = listeJoueurs[i].getNom();
       std::string log2 = " ont été placés automatiquement";
       ajouterAction(log + nom + log2, temps);
     }
+    listeJoueurs[i].getGrille().supprimer_grille(listeJoueurs[i].getFenetre());
   }
 
   ajouterAction("Tous les placements ont été correctement effectués", temps);
